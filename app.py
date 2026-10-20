@@ -189,7 +189,7 @@ def file_too_large(_error):
 
 @app.route("/")
 def home():
-    return send_from_directory("templates", "index.html")
+    return send_from_directory(".", "index.html")
 
 
 @app.route("/api/conversations", methods=["GET"])
