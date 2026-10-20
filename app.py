@@ -190,7 +190,10 @@ def file_too_large(_error):
 @app.route("/")
 def home():
     return send_from_directory(".", "index.html")
-
+    
+@app.route("/google60ac72fbd987c0b6.html")
+def google_verify():
+    return send_from_directory(".", "google60ac72fbd987c0b6.html")
 
 @app.route("/api/conversations", methods=["GET"])
 def conversations():
