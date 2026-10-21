@@ -563,35 +563,13 @@ def chat():
         if not answer:
             answer = "Kechirasiz, javob yaratilmadi."
 
-                    if question:
+        if question:
             memory.save_message(
                 cid,
                 "user",
                 question,
                 user_id=user_id,
             )
-
-        elif attachment:
-            memory.save_message(
-                cid,
-                "user",
-                "Fayl yuborildi: " + attachment["name"],
-                user_id=user_id,
-            )
-
-        memory.save_message(
-            cid,
-            "assistant",
-            answer,
-            user_id=user_id,
-        )
-            memory.save_message(
-                cid,
-                "user",
-                question,
-                user_id=user_id,
-            )
-
         elif attachment:
             memory.save_message(
                 cid,
@@ -612,7 +590,6 @@ def chat():
             "response": answer,
             "conversation_id": cid,
         })
-
     except Exception:
         app.logger.exception("Chat API xatosi")
         return jsonify({
@@ -666,7 +643,7 @@ def clear_memories():
         return jsonify({
             "error": "Xotiralarni tozalab bo‘lmadi."
         }), 500
-        @app.route("/health", methods=["GET"])
+@app.route("/health", methods=["GET"])
 def health():
     return jsonify({
         "status": "ok",
