@@ -346,7 +346,7 @@ def delete_conversation(cid):
     except Exception:
         app.logger.exception("Suhbatni o‘chirishda xato")
         return jsonify({"error": "Suhbat o‘chirilmadi."}), 500
-        def get_system_prompt():
+def get_system_prompt():
     return (
         "Sen Uzmodestly AI yordamchisisan. "
         "Foydalanuvchiga o'zbek tilida aniq, foydali va tushunarli javob ber. "
