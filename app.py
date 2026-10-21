@@ -612,26 +612,129 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
 
     recent.append(now)
         # Faqat "qidir:" buyrug'i bilan internetdan izlash
-    web_results = ""
+   ==> Downloading cache...
+==> Cloning from https://github.com/Ripv18/Uzmodestly
+==> Checking out commit d6a59affcc86f5a8a50dd08875511fb3445d4445 in branch main
+==> Downloaded and extracted 16 MiB cache in 5s.
+==> Using Python version 3.14.8 (default)
+==> Docs on specifying a Python version: https://render.com/docs/python-version
+==> Installing Python version 3.14.8...
+==> Using Poetry version 2.1.3 (default)
+==> Docs on specifying a Poetry version: https://render.com/docs/poetry-version
+==> Running build command 'pip install -r requirements.txt'...
+Collecting flask (from -r requirements.txt (line 2))
+  Using cached flask-3.1.3-py3-none-any.whl.metadata (3.2 kB)
+Collecting requests (from -r requirements.txt (line 3))
+  Using cached requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+Collecting gunicorn (from -r requirements.txt (line 4))
+  Using cached gunicorn-26.2.0-py3-none-any.whl.metadata (5.5 kB)
+Collecting pillow (from -r requirements.txt (line 5))
+  Using cached pillow-13.0.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.1 kB)
+Collecting pypdf (from -r requirements.txt (line 6))
+  Using cached pypdf-6.21.1-py3-none-any.whl.metadata (7.6 kB)
+Collecting python-docx (from -r requirements.txt (line 7))
+  Using cached python_docx-1.2.0-py3-none-any.whl.metadata (2.0 kB)
+Collecting blinker>=1.9.0 (from flask->-r requirements.txt (line 2))
+  Using cached blinker-1.9.0-py3-none-any.whl.metadata (1.6 kB)
+Collecting click>=8.1.3 (from flask->-r requirements.txt (line 2))
+  Using cached click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+Collecting itsdangerous>=2.2.0 (from flask->-r requirements.txt (line 2))
+  Using cached itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+Collecting jinja2>=3.1.2 (from flask->-r requirements.txt (line 2))
+  Using cached jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting markupsafe>=2.1.1 (from flask->-r requirements.txt (line 2))
+  Using cached markupsafe-3.0.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Collecting werkzeug>=3.1.0 (from flask->-r requirements.txt (line 2))
+  Using cached werkzeug-3.1.9-py3-none-any.whl.metadata (4.1 kB)
+Collecting charset_normalizer<4,>=2 (from requests->-r requirements.txt (line 3))
+  Using cached charset_normalizer-3.5.2-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (46 kB)
+Collecting idna<4,>=2.5 (from requests->-r requirements.txt (line 3))
+  Using cached idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+Collecting urllib3<3,>=1.26 (from requests->-r requirements.txt (line 3))
+  Using cached urllib3-2.8.0-py3-none-any.whl.metadata (7.4 kB)
+Collecting certifi>=2023.5.7 (from requests->-r requirements.txt (line 3))
+  Using cached certifi-2026.10.19-py3-none-any.whl.metadata (2.5 kB)
+Collecting lxml>=3.1.0 (from python-docx->-r requirements.txt (line 7))
+  Using cached lxml-6.1.3-cp314-cp314-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (3.3 kB)
+Collecting typing_extensions>=4.9.0 (from python-docx->-r requirements.txt (line 7))
+  Using cached typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Using cached flask-3.1.3-py3-none-any.whl (103 kB)
+Using cached requests-2.34.2-py3-none-any.whl (73 kB)
+Using cached charset_normalizer-3.5.2-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (255 kB)
+Using cached idna-3.20-py3-none-any.whl (69 kB)
+Using cached urllib3-2.8.0-py3-none-any.whl (135 kB)
+Using cached gunicorn-26.2.0-py3-none-any.whl (228 kB)
+Using cached pillow-13.0.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.1 MB)
+Using cached pypdf-6.21.1-py3-none-any.whl (405 kB)
+Using cached python_docx-1.2.0-py3-none-any.whl (252 kB)
+Using cached blinker-1.9.0-py3-none-any.whl (8.5 kB)
+Using cached certifi-2026.10.19-py3-none-any.whl (136 kB)
+Using cached click-8.5.0-py3-none-any.whl (125 kB)
+Using cached itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+Using cached jinja2-3.1.6-py3-none-any.whl (134 kB)
+Using cached lxml-6.1.3-cp314-cp314-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (5.2 MB)
+Using cached markupsafe-3.0.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (23 kB)
+Using cached typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Using cached werkzeug-3.1.9-py3-none-any.whl (228 kB)
+Installing collected packages: urllib3, typing_extensions, pypdf, pillow, markupsafe, lxml, itsdangerous, idna, gunicorn, click, charset_normalizer, certifi, blinker, werkzeug, requests, python-docx, jinja2, flask
 
-    if not has_file and question:
-        lowered = question.casefold().strip()
+Successfully installed blinker-1.9.0 certifi-2026.10.19 charset_normalizer-3.5.2 click-8.5.0 flask-3.1.3 gunicorn-26.2.0 idna-3.20 itsdangerous-2.2.0 jinja2-3.1.6 lxml-6.1.3 markupsafe-3.0.4 pillow-13.0.0 pypdf-6.21.1 python-docx-1.2.0 requests-2.34.2 typing_extensions-4.16.0 urllib3-2.8.0 werkzeug-3.1.9
 
-   if lowered.startswith("qidir:"):
-    app.logger.info("QIDIRISH BUYRUGI TOPILDI: %s", question)
-
-    search_query = question[6:].strip()
-
-    if search_query:
-        app.logger.info("TAVILY QIDIRUV BOSHLANDI")
-        web_results = search_internet(search_query)
-        app.logger.info("WEB SEARCH RESULT: %s", web_results[:500])
-            search_query = question[6:].strip()
-
-            if search_query:
-                web_results = search_internet(search_query)
-
-    if web_results:
+[notice] A new release of pip is available: 26.2.1 -> 26.2.2
+[notice] To update, run: pip install --upgrade pip
+==> Uploading build...
+==> Uploaded in 2.4s. Compression took 1.5s
+==> Build successful 🎉
+==> Deploying...
+==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
+==> Running 'gunicorn app:app'
+Traceback (most recent call last):
+  File "/opt/render/project/src/.venv/bin/gunicorn", line 6, in <module>
+    sys.exit(run())
+             ~~~^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/gunicorn/app/wsgiapp.py", line 66, in run
+    WSGIApplication("%(prog)s [OPTIONS] [APP_MODULE]", prog=prog).run()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/gunicorn/app/base.py", line 235, in run
+    super().run()
+    ~~~~~~~~~~~^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/gunicorn/app/base.py", line 71, in run
+    Arbiter(self).run()
+    ~~~~~~~^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/gunicorn/arbiter.py", line 63, in __init__
+    self.setup(app)
+    ~~~~~~~~~~^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/gunicorn/arbiter.py", line 164, in setup
+    self.app.wsgi()
+    ~~~~~~~~~~~~~^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/gunicorn/app/base.py", line 66, in wsgi
+    self.callable = self.load()
+                    ~~~~~~~~~^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/gunicorn/app/wsgiapp.py", line 57, in load
+    return self.load_wsgiapp()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/gunicorn/app/wsgiapp.py", line 47, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.14/site-packages/gunicorn/util.py", line 420, in import_app
+    mod = importlib.import_module(module)
+  File "/opt/render/project/python/Python-3.14.8/lib/python3.14/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1406, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 897, in get_code
+  File "<frozen importlib._bootstrap_external>", line 827, in source_to_code
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/opt/render/project/src/app.py", line 620
+    if lowered.startswith("qidir:"):
+                                    ^
+IndentationError: unindent does not match any outer indentation level
+==> Exited with status 1
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
         safe_messages.append({
             "role": "system",
             "content": (
