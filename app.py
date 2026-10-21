@@ -401,7 +401,34 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
             "\nAgar foydalanuvchi o‘z ismini so‘rasa, aynan shu ismni ayt."
             "\nIsmni boshqa odamlar bilan aralashtirma."
         )
+    if memory_action:
+        system_prompt += (
+            "\n\nXOTIRA AMALI: " + memory_action
+            + "\nFoydalanuvchiga natijani qisqa va rost ayt."
+        )
 
+    try:
+        saved_memories = memory.get_memories(
+            user_id=user_id,
+            limit=25,
+        )
+
+        if saved_memories:
+            memory_text = "\n".join(
+                "- " + item["content"]
+                for item in saved_memories
+            )
+
+            system_prompt += (
+                "\n\nFOYDALANUVCHINING SHAXSIY XOTIRASI:"
+                "\nQuyidagi ma'lumotlardan kerak bo'lganda foydalan."
+                "\nFoydalanuvchi nimalarni eslayotganingni so'rasa, "
+                "shu ma'lumotlar asosida javob ber."
+                "\n" + memory_text[:5000]
+            )
+
+    except Exception:
+        app.logger.exception("Shaxsiy xotirani o'qishda xato")
     safe_messages = [{"role": "system", "content": system_prompt}]
 
     try:
