@@ -481,8 +481,10 @@ def generate_answer(question, history=None, attachment=None):
         "content": question,
     })
 
-    return call_groq(messages)
-    @app.route("/api/chat", methods=["POST"])
+     return call_groq(messages)
+
+
+@app.route("/api/chat", methods=["POST"])
 def chat():
     user_id = get_user_id()
 
