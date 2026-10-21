@@ -195,9 +195,7 @@ def file_too_large(_error):
 
 @app.route("/")
 def home():
-    return (
-        "index.html: " + str(os.path.exists("index.html"))
-        + " | logo.png: " + str(os.path.exists("logo.png"))
+    return send_from_directory(".", "index.html")
     )
 
 @app.route("/logo.png")
