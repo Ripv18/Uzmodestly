@@ -87,7 +87,43 @@ button { cursor:pointer; }
     object-fit: contain;
     border-radius: 10px;
 }
-    
+  
+/* Uzmodestly AI — Modern white & blue theme */
+:root {
+    --ua-primary: #2878f0;
+    --ua-primary-light: #60a5fa;
+    --ua-gradient: linear-gradient(135deg, #2878f0, #60c5fa);
+    --ua-bg: #f4f8ff;
+    --ua-panel: #ffffff;
+    --ua-text: #17243b;
+    --ua-border: #e1eafa;
+}
+
+body {
+    background: var(--ua-bg);
+    color: var(--ua-text);
+}
+
+button {
+    transition: background 0.2s ease, transform 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+button:hover {
+    box-shadow: 0 4px 14px rgba(40, 120, 240, 0.15);
+}
+
+input, textarea {
+    border-radius: 16px;
+    border-color: var(--ua-border);
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--ua-primary-light);
+    box-shadow: 0 0 0 3px rgba(40, 120, 240, 0.10);
+}
+  
 </style>
 </head>
 <body>
