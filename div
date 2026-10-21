@@ -79,6 +79,7 @@ button { cursor:pointer; }
     <aside class="sidebar" id="sidebar">
        <div class="brand">Uzmodestly<span>.</span></div>
         <button class="btn new-chat" id="newChatBtn">＋ Yangi suhbat</button>
+        <button class="btn" id="memoriesBtn">🧠 Saqlangan xotiralar</button>
         <div class="section-label">SUHBATLAR TARIXI</div>
         <div class="history" id="history">
             <div style="color:#999ba8;padding:10px;font-size:13px">
@@ -127,6 +128,35 @@ button { cursor:pointer; }
     </main>
 </div>
 <div class="toast" id="toast"></div>
+    <div id="memoriesModal" style="
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:30;
+    background:#0009;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+">
+    <div style="
+        background:#171922;
+        border:1px solid #36394a;
+        border-radius:16px;
+        padding:20px;
+        width:100%;
+        max-width:520px;
+        max-height:80dvh;
+        overflow-y:auto;
+    ">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+            <h2 style="font-size:19px;margin:0;flex:1">🧠 Saqlangan xotiralar</h2>
+            <button class="btn" id="closeMemoriesBtn">✕</button>
+        </div>
+        <div id="memoriesList" style="display:flex;flex-direction:column;gap:10px">
+            Yuklanmoqda...
+        </div>
+    </div>
+</div>
 <script>
 (() => {
     "use strict";
