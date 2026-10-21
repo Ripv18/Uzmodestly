@@ -250,3 +250,14 @@ def delete_conversation(conversation_id, user_id=None):
 
 
 init_db()
+def clear_memories(user_id=None):
+    if not user_id:
+        return 0
+
+    with connect() as con:
+        cur = con.execute(
+            "DELETE FROM memories WHERE user_id=?",
+            (user_id,),
+        )
+
+    return cur.rowcount
