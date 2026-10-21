@@ -31,6 +31,10 @@ except ImportError:
 
 
 app = Flask(__name__)
+@app.route("/logo.png")
+def logo():
+    return send_from_directory(app.root_path, "logo.png")
+from flask import send_from_directory
 app.config["MAX_CONTENT_LENGTH"] = 12 * 1024 * 1024
 app.json.ensure_ascii = False
 
