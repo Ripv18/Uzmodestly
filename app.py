@@ -429,43 +429,7 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
 
     except Exception:
         app.logger.exception("Shaxsiy xotirani o'qishda xato")
-    safe_messages = [{"role": "system", "content": system_prompt}]
-
-  
-    memory_action = ""
-
-    if question and not attachment:
-        lowered = question.casefold().strip()
-
-        if lowered.startswith("eslab qol:"):
-            fact = question.split(":", 1)[1].strip()
-            if fact:
-                saved = memory.remember(fact, user_id=user_id)
-                memory_action = (
-                    "Ma'lumot xotiraga saqlandi."
-                    if saved
-                    else "Bu ma'lumot avval ham saqlangan."
-                )
-            else:
-                memory_action = "Eslab qolish uchun ma'lumot so'ra."
-
-        elif lowered.startswith("unut:"):
-            fact = question.split(":", 1)[1].strip()
-            removed = memory.forget_matching(
-                fact, user_id=user_id
-            ) if fact else 0
-            memory_action = (
-                "Xotira o'chirildi."
-                if removed
-                else "Mos xotira topilmadi."
-            )
-
-    if memory_action:
-        system_prompt += (
-            "\n\nXOTIRA BUYRUG'I: " + memory_action
-            + "\nNatijani foydalanuvchiga rost va qisqa tushuntir."
-        )
-
+   
     safe_messages = [{"role": "system", "content": system_prompt}]
 
     try:
