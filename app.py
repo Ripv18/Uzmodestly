@@ -37,6 +37,46 @@ app.json.ensure_ascii = False
 logging.basicConfig(level=logging.INFO)
 
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
+def search_internet(query):
+    api_key = os.environ.get("TAVILY_API_KEY", "").strip()
+
+    if not api_key:
+        return "Internet qidiruvi sozlanmagan."
+
+    try:
+        response = requests.post(
+            "https://api.tavily.com/search",
+            json={
+                "api_key": api_key,
+                "query": query,
+                "search_depth": "basic",
+                "max_results": 5,
+                "include_answer": True
+            },
+            timeout=15
+        )
+        response.raise_for_status()
+        data = response.json()
+
+        results = []
+
+        if data.get("answer"):
+            results.append("QISQA JAVOB: " + data["answer"])
+
+        for item in data.get("results", []):
+            title = item.get("title", "")
+            url = item.get("url", "")
+            content = item.get("content", "")
+
+            results.append(
+                f"Manba: {title}\nURL: {url}\nMa'lumot: {content}"
+            )
+
+        return "\n\n".join(results) or "Qidiruv natijasi topilmadi."
+
+    except Exception:
+        app.logger.exception("Internet qidiruvida xato")
+        return "Internet qidiruvi vaqtincha ishlamadi."
 MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-20b")
 VISION_MODEL = os.environ.get("GROQ_VISION_MODEL", "qwen/qwen3.8-27b")
 
@@ -571,6 +611,28 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
         return jsonify({"error": "Xabar saqlanmadi."}), 500
 
     recent.append(now)
+        # Faqat "qidir:" buyrug'i bilan internetdan izlash
+    web_results = ""
+
+    if not has_file and question:
+        lowered = question.casefold().strip()
+
+        if lowered.startswith("qidir:"):
+            search_query = question[6:].strip()
+
+            if search_query:
+                web_results = search_internet(search_query)
+
+    if web_results:
+        safe_messages.append({
+            "role": "system",
+            "content": (
+                "INTERNET QIDIRUV NATIJALARI. "
+                "Natijalardan foydalanib, o'zbek tilida javob ber. "
+                "Faktlarni to'qima va javob oxirida manba URLlarini ko'rsat.\n\n"
+                + web_results[:10000]
+            ),
+        })
     selected_model = (
         VISION_MODEL
         if attachment and attachment["type"] == "image"
