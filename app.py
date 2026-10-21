@@ -14,7 +14,7 @@ from werkzeug.utils import secure_filename
 import memory
 
 try:
-    from PIL import Image
+  from PIL import Image, ImageOps
 except ImportError:
     Image = None
 
