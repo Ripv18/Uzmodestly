@@ -322,6 +322,7 @@ def chat():
         return jsonify({
             "error": "GROQ_API_KEY sozlanmagan."
         }), 503
+        
     question = (
         request.form.get("message") or ""
     ).strip()[:3000]
