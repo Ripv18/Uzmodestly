@@ -1314,11 +1314,28 @@ function formatAssistantText(container, content) {
                         inlineCode.className = "inline-code";
                         inlineCode.textContent = segment.slice(1, -1);
                         container.appendChild(inlineCode);
-                    } else {
-                        container.appendChild(
-                            document.createTextNode(segment)
-                        );
-                    }
+                  
+} else {
+    const urlPattern = /(https?:\/\/[^\s<]+)/g;
+    const urlParts = segment.split(urlPattern);
+
+    urlParts.forEach(urlPart => {
+        if (/^https?:\/\//i.test(urlPart)) {
+            const link = document.createElement("a");
+            link.href = urlPart;
+            link.textContent = urlPart;
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+            link.className = "ai-link";
+            container.appendChild(link);
+        } else {
+            container.appendChild(
+                document.createTextNode(urlPart)
+            );
+        }
+    });
+}
+
                 });
             }
 
