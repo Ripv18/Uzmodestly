@@ -630,22 +630,21 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
                     web_results[:500]
                 )
 
-    if web_results:
-        safe_messages.append({
+      if web_results:
+        safe_messages.insert(1, {
             "role": "system",
             "content": (
-                "INTERNET QIDIRUV NATIJALARI. "
-                "Natijalardan foydalanib, o'zbek tilida javob ber. "
-                "Faktlarni to'qima va javob oxirida manba URLlarini ko'rsat.\n\n"
-                + web_results[:10000]
-            ),
-        })
-        safe_messages.append({
-            "role": "system",
-            "content": (
-                "INTERNET QIDIRUV NATIJALARI. "
-                "Natijalardan foydalanib, o'zbek tilida javob ber. "
-                "Faktlarni to'qima va javob oxirida manba URLlarini ko'rsat.\n\n"
+                "INTERNET QIDIRUVI QOIDALARI:\n"
+                "1. Faqat quyida berilgan qidiruv natijalariga tayan.\n"
+                "2. Natijalarda yo'q faktlarni o'zingdan qo'shma.\n"
+                "3. Yangilik sanasi manbada aniq ko'rsatilmagan bo'lsa, "
+                "sanani taxmin qilma.\n"
+                "4. Manbalar bir-biriga zid bo'lsa, buni ochiq ayt.\n"
+                "5. Natijalar savolga javob bermasa, buni tan ol.\n"
+                "6. Javobni o'zbek tilida yoz.\n"
+                "7. Foydalanilgan manbalarning URL manzillarini "
+                "javob oxirida ko'rsat.\n\n"
+                "QIDIRUV NATIJALARI:\n"
                 + web_results[:10000]
             ),
         })
