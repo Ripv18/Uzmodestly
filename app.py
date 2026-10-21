@@ -405,26 +405,7 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
             ]
 
         else:
-            user_content = [
-                {
-                    "type": "text",
-                    "text": (
-                        user_content
-                        + "\n\nRASM TAHLILI QOIDALARI:"
-                        + "\n1. Avval rasmda ko‘rinayotgan masala matnini diqqat bilan o‘qi."
-                        + "\n2. Sonlar, ishoralar, kasrlar va formulalarni tekshir."
-                        + "\n3. Masala shartini o‘zingcha o‘zgartirma."
-                        + "\n4. Noaniq belgini taxmin qilma; qaysi joy noaniq ekanini ayt."
-                        + "\n5. Keyin masalani bosqichma-bosqich yech."
-                        + "\n6. Rasmni to‘liq ko‘rib chiq va javobni tekshir."
-                    ),
-                },
-                {
-                    "type": "image_url",
-                    "image_url": {"url": attachment["data_url"]},
-                },
-            ]
-
+           
     try:
         memory.save_message(cid, "user", saved_question)
         safe_messages.append({
