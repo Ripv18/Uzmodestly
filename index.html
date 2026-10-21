@@ -623,6 +623,112 @@ body,
     border-radius: 12px;
 }
 
+/* Uzmodestly AI — Premium conversation history */
+.sidebar .history {
+    gap: 7px;
+    padding: 6px 2px 12px;
+    scrollbar-width: thin;
+    scrollbar-color: #c6dafa transparent;
+}
+
+.sidebar .history-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    min-width: 0;
+    padding: 4px;
+    border: 1px solid transparent;
+    border-radius: 13px;
+    background: transparent;
+    transition: background .2s ease,
+                border-color .2s ease,
+                transform .2s ease;
+}
+
+.sidebar .history-item:hover {
+    background: #eaf3ff;
+    border-color: #dceaff;
+    transform: translateX(2px);
+}
+
+.sidebar .history-item.active {
+    background: #e3efff;
+    border-color: #cfe2ff;
+    box-shadow: 0 3px 10px #2878f00a;
+}
+
+.sidebar .history-open {
+    min-width: 0;
+    flex: 1;
+    padding: 11px 9px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: #344967;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    transition: color .2s ease;
+}
+
+.sidebar .history-item:hover .history-open,
+.sidebar .history-item.active .history-open {
+    color: #1769d2;
+}
+
+.sidebar .delete-chat {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: transparent;
+    color: #8293ab;
+    font-size: 19px;
+    opacity: .65;
+    transition: all .2s ease;
+}
+
+.sidebar .history-item:hover .delete-chat,
+.sidebar .history-item.active .delete-chat {
+    opacity: 1;
+}
+
+.sidebar .delete-chat:hover {
+    background: #fff0f0;
+    border-color: #ffdada;
+    color: #e04444;
+}
+
+.sidebar .history button:focus-visible {
+    outline: 2px solid #60a5fa;
+    outline-offset: 2px;
+}
+
+@media (max-width: 700px) {
+    .sidebar .history-item {
+        padding: 5px;
+    }
+
+    .sidebar .history-open {
+        padding: 12px 9px;
+        font-size: 14px;
+    }
+
+    .sidebar .delete-chat {
+        width: 34px;
+        height: 34px;
+        opacity: 1;
+    }
+}
+
 </style>
 </head>
 <body>
