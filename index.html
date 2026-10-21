@@ -1417,11 +1417,19 @@ function addMessage(role, content, attachmentName = "") {
         }
     }
 
-    if (role === "assistant") {
-        renderContent(message);
-    } else {
-        text.textContent = message;
-    }
+   if (role === "assistant") {
+    const parts = message.split(/(```[\s\S]*?```)/g);
+
+    parts.forEach(part => {
+        if (part.startsWith("```") && part.endsWith("```")) {
+            renderContent(part);
+        } else {
+            formatAssistantText(text, part);
+        }
+    });
+} else {
+    text.textContent = message;
+}
 
     body.appendChild(name);
 
