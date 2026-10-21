@@ -617,7 +617,15 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
     if not has_file and question:
         lowered = question.casefold().strip()
 
-        if lowered.startswith("qidir:"):
+   if lowered.startswith("qidir:"):
+    app.logger.info("QIDIRISH BUYRUGI TOPILDI: %s", question)
+
+    search_query = question[6:].strip()
+
+    if search_query:
+        app.logger.info("TAVILY QIDIRUV BOSHLANDI")
+        web_results = search_internet(search_query)
+        app.logger.info("WEB SEARCH RESULT: %s", web_results[:500])
             search_query = question[6:].strip()
 
             if search_query:
