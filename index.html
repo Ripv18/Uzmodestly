@@ -781,6 +781,118 @@ body,
     }
 }
 
+/* Uzmodestly AI — Premium message composer */
+.composer-wrap {
+    max-width: 850px;
+}
+
+.composer {
+    padding: 10px 12px;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid #d6e5f8;
+    border-radius: 24px;
+    box-shadow: 0 8px 28px rgba(35, 80, 145, 0.09);
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.composer:focus-within {
+    border-color: #78adf8;
+    box-shadow: 0 0 0 4px rgba(40, 120, 240, 0.09),
+                0 10px 30px rgba(35, 80, 145, 0.08);
+}
+
+.composer textarea {
+    min-height: 44px;
+    padding: 12px 6px;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.composer textarea::placeholder {
+    color: #8a9bb2;
+}
+
+.composer .icon-btn {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    border-radius: 15px;
+}
+
+.composer #attachBtn {
+    background: #edf5ff;
+    color: #2878f0;
+    border: 1px solid #dceaff;
+    font-size: 23px;
+}
+
+.composer #attachBtn:hover {
+    background: #deecff;
+    transform: translateY(-1px);
+}
+
+.composer .send-btn {
+    background: linear-gradient(135deg, #2878f0, #55bdf3);
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 4px 12px rgba(40, 120, 240, 0.2);
+    font-size: 23px;
+    font-weight: 700;
+}
+
+.composer .send-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #1f67d4, #35a9e9);
+    transform: translateY(-2px);
+}
+
+.composer .send-btn:disabled {
+    opacity: .45;
+    box-shadow: none;
+}
+
+.file-preview {
+    background: #ffffff;
+    border-color: #dce8f8;
+    color: #2869c8;
+    border-radius: 14px 14px 0 0;
+}
+
+.disclaimer {
+    padding-top: 3px;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+@media (max-width: 700px) {
+    .composer-wrap {
+        max-width: 100%;
+    }
+
+    .composer {
+        padding: 7px;
+        gap: 6px;
+        border-radius: 20px;
+    }
+
+    .composer textarea {
+        min-height: 42px;
+        padding: 10px 3px;
+        font-size: 14px;
+    }
+
+    .composer .icon-btn {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        border-radius: 12px;
+    }
+
+    .disclaimer {
+        font-size: 10px;
+    }
+}
+
 </style>
 </head>
 <body>
