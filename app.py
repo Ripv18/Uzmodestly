@@ -200,8 +200,11 @@ def home():
 
 @app.route("/logo.png")
 def logo():
-    return send_from_directory(".", "logo.png")
-
+    return send_from_directory(
+        os.path.dirname(os.path.abspath(__file__)),
+        "logo.png",
+        mimetype="image/png"
+    )
 
 @app.route("/google60ac72fbd987c0b6.html")
 def google_verify():
