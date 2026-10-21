@@ -261,7 +261,38 @@ def delete_conversation(cid):
     except Exception:
         app.logger.exception("Suhbatni o‘chirishda xato")
         return jsonify({"error": "Suhbat o‘chirilmadi."}), 500
+@app.route("/api/memories", methods=["GET"])
+def list_memories():
+    user_id = get_user_id()
 
+    if not user_id:
+        return jsonify({"error": "Foydalanuvchi ID noto‘g‘ri."}), 400
+
+    try:
+        items = memory.get_memories(user_id=user_id, limit=100)
+        return jsonify({"memories": items})
+    except Exception:
+        app.logger.exception("Xotiralarni olishda xato")
+        return jsonify({"error": "Xotiralarni olib bo‘lmadi."}), 500
+
+
+@app.route("/api/memories/<int:memory_id>", methods=["DELETE"])
+def delete_memory(memory_id):
+    user_id = get_user_id()
+
+    if not user_id:
+        return jsonify({"error": "Foydalanuvchi ID noto‘g‘ri."}), 400
+
+    try:
+        deleted = memory.forget(memory_id, user_id=user_id)
+
+        if not deleted:
+            return jsonify({"error": "Xotira topilmadi."}), 404
+
+        return jsonify({"success": True})
+    except Exception:
+        app.logger.exception("Xotirani o‘chirishda xato")
+        return jsonify({"error": "Xotirani o‘chirib bo‘lmadi."}), 500
 
 @app.route("/api/chat", methods=["POST"])
 def chat():
