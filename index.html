@@ -1286,74 +1286,30 @@ function formatAssistantText(container, content) {
     const lines = content.split("\n");
 
     lines.forEach((line, index) => {
-        const heading = line.match(/^(#{1,3})\s+(.+)$/);
+        const segments = line.split(/(https?:\/\/[^\s<]+|\*\*[^*]+\*\*|`[^`]+`)/g);
 
-        if (heading) {
-            const h = document.createElement(
-                "h" + Math.min(heading[1].length + 1, 4)
-            );
-            h.textContent = heading[2];
-            container.appendChild(h);
-        } else if (/^\s*[-*]\s+/.test(line)) {
-            const item = document.createElement("div");
-            item.className = "formatted-list-item";
-            item.textContent = "• " + line.replace(/^\s*[-*]\s+/, "");
-            container.appendChild(item);
-        } else if (/^\s*\d+\.\s+/.test(line)) {
-            const item = document.createElement("div");
-            item.className = "formatted-list-item";
-            item.textContent = line.trim();
-            container.appendChild(item);
-        } else {
-            const segments = line.split(
-                /(https?:\/\/[^\s<]+|\*\*[^*]+\*\*|`[^`]+`)/g
-            );
-
-            segments.forEach(segment => {
-                if (/^https?:\/\//i.test(segment)) {
-                    let url = segment;
-                    let punctuation = "";
-
-                    while (/[.,!?;:]$/.test(url)) {
-                        punctuation = url.slice(-1) + punctuation;
-                        url = url.slice(0, -1);
-                    }
-
-                    const link = document.createElement("a");
-                    link.href = url;
-                    link.textContent = url;
-                    link.target = "_blank";
-                    link.rel = "noopener noreferrer";
-                    link.className = "ai-link";
-                    container.appendChild(link);
-
-                    if (punctuation) {
-                        container.appendChild(
-                            document.createTextNode(punctuation)
-                        );
-                    }
-                } else if (
-                    segment.startsWith("**") &&
-                    segment.endsWith("**")
-                ) {
-                    const strong = document.createElement("strong");
-                    strong.textContent = segment.slice(2, -2);
-                    container.appendChild(strong);
-                } else if (
-                    segment.startsWith("`") &&
-                    segment.endsWith("`")
-                ) {
-                    const code = document.createElement("code");
-                    code.className = "inline-code";
-                    code.textContent = segment.slice(1, -1);
-                    container.appendChild(code);
-                } else {
-                    container.appendChild(
-                        document.createTextNode(segment)
-                    );
-                }
-            });
-        }
+        segments.forEach(segment => {
+            if (/^https?:\/\//i.test(segment)) {
+                const link = document.createElement("a");
+                link.href = segment;
+                link.textContent = segment;
+                link.target = "_blank";
+                link.rel = "noopener noreferrer";
+                link.className = "ai-link";
+                container.appendChild(link);
+            } else if (segment.startsWith("**") && segment.endsWith("**")) {
+                const strong = document.createElement("strong");
+                strong.textContent = segment.slice(2, -2);
+                container.appendChild(strong);
+            } else if (segment.startsWith("`") && segment.endsWith("`")) {
+                const code = document.createElement("code");
+                code.className = "inline-code";
+                code.textContent = segment.slice(1, -1);
+                container.appendChild(code);
+            } else {
+                container.appendChild(document.createTextNode(segment));
+            }
+        });
 
         if (index < lines.length - 1) {
             container.appendChild(document.createElement("br"));
