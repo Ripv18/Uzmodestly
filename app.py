@@ -197,6 +197,10 @@ def file_too_large(_error):
 def home():
     return send_from_directory(".", "index.html")
 
+@app.route("/logo.png")
+def logo():
+    return send_from_directory(".", "logo.png")
+
 
 @app.route("/google60ac72fbd987c0b6.html")
 def google_verify():
