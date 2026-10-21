@@ -683,6 +683,7 @@ body {
     }
 
    
+
 async function api(url, options = {}) {
     const headers = new Headers(options.headers || {});
 
@@ -730,24 +731,6 @@ async function api(url, options = {}) {
 
     return text;
 }
-
-
-async function api(url, options = {}) {
-    const headers = new Headers(options.headers || {});
-
-    const userIdKey = "uzmodestly_user_id_v1";
-    let userId = localStorage.getItem(userIdKey);
-
-    if (!userId) {
-        userId = window.crypto?.randomUUID
-            ? window.crypto.randomUUID()
-            : "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-                /[xy]/g,
-                function (c) {
-                    const r = Math.random() * 16 | 0;
-                    return (c === "x" ? r : (r & 3 | 8)).toString(16);
-                }
-            );
 
         localStorage.setItem(userIdKey, userId);
     }
