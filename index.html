@@ -966,6 +966,41 @@ body,
     }
 }
 
+/* Uzmodestly AI — Markdown styling */
+.message-content h2,
+.message-content h3,
+.message-content h4 {
+    margin: 14px 0 8px;
+    color: #1d3d68;
+    line-height: 1.4;
+    font-weight: 700;
+}
+
+.message-content h2 { font-size: 21px; }
+.message-content h3 { font-size: 18px; }
+.message-content h4 { font-size: 16px; }
+
+.message-content strong {
+    color: #213f68;
+    font-weight: 750;
+}
+
+.message-content .formatted-list-item {
+    margin: 5px 0;
+    padding-left: 5px;
+    line-height: 1.7;
+}
+
+.message-content .inline-code {
+    padding: 2px 6px;
+    border: 1px solid #dce8f8;
+    border-radius: 5px;
+    background: #edf4ff;
+    color: #1e63b8;
+    font-family: Consolas, monospace;
+    font-size: .92em;
+}
+
 </style>
 </head>
 <body>
@@ -1232,6 +1267,68 @@ body,
         messagesBox.scrollTop = messagesBox.scrollHeight;
     }
    
+function formatAssistantText(container, content) {
+    const parts = content.split(/(```[\s\S]*?```)/g);
+
+    parts.forEach(part => {
+        if (part.startsWith("```") && part.endsWith("```")) {
+            container.appendChild(document.createTextNode(part));
+            return;
+        }
+
+        const lines = part.split("\n");
+
+        lines.forEach((line, index) => {
+            let current = line;
+
+            const heading = current.match(/^(#{1,3})\s+(.+)$/);
+            if (heading) {
+                const h = document.createElement(
+                    "h" + Math.min(heading[1].length + 1, 4)
+                );
+                h.textContent = heading[2];
+                container.appendChild(h);
+            } else if (/^\s*[-*]\s+/.test(current)) {
+                const item = document.createElement("div");
+                item.className = "formatted-list-item";
+                item.textContent = "• " + current.replace(/^\s*[-*]\s+/, "");
+                container.appendChild(item);
+            } else if (/^\s*\d+\.\s+/.test(current)) {
+                const item = document.createElement("div");
+                item.className = "formatted-list-item";
+                item.textContent = current.trim();
+                container.appendChild(item);
+            } else {
+                const segments = current.split(/(\*\*[^*]+\*\*|`[^`]+`)/g);
+
+                segments.forEach(segment => {
+                    if (segment.startsWith("**") && segment.endsWith("**")) {
+                        const strong = document.createElement("strong");
+                        strong.textContent = segment.slice(2, -2);
+                        container.appendChild(strong);
+                    } else if (
+                        segment.startsWith("`") &&
+                        segment.endsWith("`")
+                    ) {
+                        const inlineCode = document.createElement("code");
+                        inlineCode.className = "inline-code";
+                        inlineCode.textContent = segment.slice(1, -1);
+                        container.appendChild(inlineCode);
+                    } else {
+                        container.appendChild(
+                            document.createTextNode(segment)
+                        );
+                    }
+                });
+            }
+
+            if (index < lines.length - 1) {
+                container.appendChild(document.createElement("br"));
+            }
+        });
+    });
+}
+
 function addMessage(role, content, attachmentName = "") {
     showWelcome(false);
 
