@@ -630,20 +630,29 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
                     web_results[:500]
                 )
 
-      if web_results:
+
+
+    
+         if web_results:
+
+
+
+
+
+
+
+             
         safe_messages.insert(1, {
             "role": "system",
             "content": (
                 "INTERNET QIDIRUVI QOIDALARI:\n"
                 "1. Faqat quyida berilgan qidiruv natijalariga tayan.\n"
                 "2. Natijalarda yo'q faktlarni o'zingdan qo'shma.\n"
-                "3. Yangilik sanasi manbada aniq ko'rsatilmagan bo'lsa, "
-                "sanani taxmin qilma.\n"
-                "4. Manbalar bir-biriga zid bo'lsa, buni ochiq ayt.\n"
-                "5. Natijalar savolga javob bermasa, buni tan ol.\n"
-                "6. Javobni o'zbek tilida yoz.\n"
-                "7. Foydalanilgan manbalarning URL manzillarini "
-                "javob oxirida ko'rsat.\n\n"
+                "3. Sana manbada bo'lmasa, uni taxmin qilma.\n"
+                "4. Manbalar zid bo'lsa, buni ayt.\n"
+                "5. Natijalar yetarli bo'lmasa, buni tan ol.\n"
+                "6. O'zbek tilida javob ber.\n"
+                "7. Manba URLlarini javob oxirida ko'rsat.\n\n"
                 "QIDIRUV NATIJALARI:\n"
                 + web_results[:10000]
             ),
