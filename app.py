@@ -30,15 +30,20 @@ except ImportError:
     Document = None
 
 
+
+from flask import send_from_directory
+
 app = Flask(__name__)
+
 @app.route("/logo.png")
 def logo():
     return send_from_directory(app.root_path, "logo.png")
-from flask import send_from_directory
+
 app.config["MAX_CONTENT_LENGTH"] = 12 * 1024 * 1024
 app.json.ensure_ascii = False
 
 logging.basicConfig(level=logging.INFO)
+
 
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-20b")
