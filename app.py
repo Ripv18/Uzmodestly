@@ -613,10 +613,11 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
     recent.append(now)
         # Faqat "qidir:" buyrug'i bilan internetdan izlash
     # Faqat "qidir:" buyrug'i bilan internetdan izlash
-    web_results = ""
+       web_results = ""
 
     if not has_file and question:
         lowered = question.casefold().strip()
+
         if lowered.startswith("qidir:"):
             app.logger.info("QIDIRISH BUYRUGI TOPILDI: %s", question)
             search_query = question[6:].strip()
@@ -634,7 +635,7 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
             "role": "system",
             "content": (
                 "INTERNET QIDIRUVI QOIDALARI:\n"
-                "Faqat qidiruv natijalaridagi faktlardan foydalan. "
+                "Faqat qidiruv natijalarida mavjud faktlardan foydalan. "
                 "Ma'lumot yoki sanalarni to'qima. "
                 "Natijalar yetarli bo'lmasa, buni ayt. "
                 "O'zbek tilida javob ber va manba URLlarini ko'rsat.\n\n"
@@ -642,20 +643,7 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
                 + web_results[:10000]
             ),
         })
-            "role": "system",
-            "content": (
-                "INTERNET QIDIRUVI QOIDALARI:\n"
-                "1. Faqat quyida berilgan qidiruv natijalariga tayan.\n"
-                "2. Natijalarda yo'q faktlarni o'zingdan qo'shma.\n"
-                "3. Sana manbada bo'lmasa, uni taxmin qilma.\n"
-                "4. Manbalar zid bo'lsa, buni ayt.\n"
-                "5. Natijalar yetarli bo'lmasa, buni tan ol.\n"
-                "6. O'zbek tilida javob ber.\n"
-                "7. Manba URLlarini javob oxirida ko'rsat.\n\n"
-                "QIDIRUV NATIJALARI:\n"
-                + web_results[:10000]
-            ),
-        })
+
     selected_model = (
         VISION_MODEL
         if attachment and attachment["type"] == "image"
