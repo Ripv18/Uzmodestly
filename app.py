@@ -156,12 +156,18 @@ def read_attachment(file):
                 image.verify()
 
             with Image.open(io.BytesIO(raw_bytes)) as image:
+                image = ImageOps.exif_transpose(image)
                 image = image.convert("RGB")
-                image.thumbnail((2048, 2048))
+                image.thumbnail((3072, 3072))
 
                 buffer = io.BytesIO()
-                image.save(buffer, format="JPEG", quality=85)
-
+                image.save(
+                    buffer,
+                    format="JPEG",
+                    quality=92,
+                    optimize=True
+                )
+        
             encoded = base64.b64encode(buffer.getvalue()).decode("ascii")
 
         except Exception as exc:
@@ -377,8 +383,22 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
                 + attachment["text"]
             )
         else:
+           
+        else:
             user_content = [
-                {"type": "text", "text": user_content},
+                {
+                    "type": "text",
+                    "text": (
+                        user_content
+                        + "\n\nRASM TAHLILI QOIDALARI:"
+                        + "\n1. Avval rasmda ko‘rinayotgan masala matnini diqqat bilan o‘qi."
+                        + "\n2. Sonlar, ishoralar, kasrlar va formulalarni tekshir."
+                        + "\n3. Masala shartini o‘zingcha o‘zgartirma."
+                        + "\n4. Noaniq belgini taxmin qilma; qaysi joy noaniq ekanini ayt."
+                        + "\n5. Keyin masalani bosqichma-bosqich yech."
+                        + "\n6. Rasmni to‘liq ko‘rib chiq va javobni tekshir."
+                    ),
+                },
                 {
                     "type": "image_url",
                     "image_url": {"url": attachment["data_url"]},
