@@ -1281,82 +1281,83 @@ body,
         messagesBox.scrollTop = messagesBox.scrollHeight;
     }
    
+
 function formatAssistantText(container, content) {
-    const parts = content.split(/(```[\s\S]*?```)/g);
+    const lines = content.split("\n");
 
-    parts.forEach(part => {
-        if (part.startsWith("```") && part.endsWith("```")) {
-            container.appendChild(document.createTextNode(part));
-            return;
-        }
+    lines.forEach((line, index) => {
+        const heading = line.match(/^(#{1,3})\s+(.+)$/);
 
-        const lines = part.split("\n");
-
-        lines.forEach((line, index) => {
-            let current = line;
-
-            const heading = current.match(/^(#{1,3})\s+(.+)$/);
-            if (heading) {
-                const h = document.createElement(
-                    "h" + Math.min(heading[1].length + 1, 4)
-                );
-                h.textContent = heading[2];
-                container.appendChild(h);
-            } else if (/^\s*[-*]\s+/.test(current)) {
-                const item = document.createElement("div");
-                item.className = "formatted-list-item";
-                item.textContent = "• " + current.replace(/^\s*[-*]\s+/, "");
-                container.appendChild(item);
-            } else if (/^\s*\d+\.\s+/.test(current)) {
-                const item = document.createElement("div");
-                item.className = "formatted-list-item";
-                item.textContent = current.trim();
-                container.appendChild(item);
-            } else {
-                const segments = current.split(/(\*\*[^*]+\*\*|`[^`]+`)/g);
-
-                segments.forEach(segment => {
-                    if (segment.startsWith("**") && segment.endsWith("**")) {
-                        const strong = document.createElement("strong");
-                        strong.textContent = segment.slice(2, -2);
-                        container.appendChild(strong);
-                    } else if (
-                        segment.startsWith("`") &&
-                        segment.endsWith("`")
-                    ) {
-                        const inlineCode = document.createElement("code");
-                        inlineCode.className = "inline-code";
-                        inlineCode.textContent = segment.slice(1, -1);
-                        container.appendChild(inlineCode);
-                  
-} else {
-    const urlPattern = /(https?:\/\/[^\s<]+)/g;
-    const urlParts = segment.split(urlPattern);
-
-    urlParts.forEach(urlPart => {
-        if (/^https?:\/\//i.test(urlPart)) {
-            const link = document.createElement("a");
-            link.href = urlPart;
-            link.textContent = urlPart;
-            link.target = "_blank";
-            link.rel = "noopener noreferrer";
-            link.className = "ai-link";
-            container.appendChild(link);
-        } else {
-            container.appendChild(
-                document.createTextNode(urlPart)
+        if (heading) {
+            const h = document.createElement(
+                "h" + Math.min(heading[1].length + 1, 4)
             );
+            h.textContent = heading[2];
+            container.appendChild(h);
+        } else if (/^\s*[-*]\s+/.test(line)) {
+            const item = document.createElement("div");
+            item.className = "formatted-list-item";
+            item.textContent = "• " + line.replace(/^\s*[-*]\s+/, "");
+            container.appendChild(item);
+        } else if (/^\s*\d+\.\s+/.test(line)) {
+            const item = document.createElement("div");
+            item.className = "formatted-list-item";
+            item.textContent = line.trim();
+            container.appendChild(item);
+        } else {
+            const segments = line.split(
+                /(https?:\/\/[^\s<]+|\*\*[^*]+\*\*|`[^`]+`)/g
+            );
+
+            segments.forEach(segment => {
+                if (/^https?:\/\//i.test(segment)) {
+                    let url = segment;
+                    let punctuation = "";
+
+                    while (/[.,!?;:]$/.test(url)) {
+                        punctuation = url.slice(-1) + punctuation;
+                        url = url.slice(0, -1);
+                    }
+
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.textContent = url;
+                    link.target = "_blank";
+                    link.rel = "noopener noreferrer";
+                    link.className = "ai-link";
+                    container.appendChild(link);
+
+                    if (punctuation) {
+                        container.appendChild(
+                            document.createTextNode(punctuation)
+                        );
+                    }
+                } else if (
+                    segment.startsWith("**") &&
+                    segment.endsWith("**")
+                ) {
+                    const strong = document.createElement("strong");
+                    strong.textContent = segment.slice(2, -2);
+                    container.appendChild(strong);
+                } else if (
+                    segment.startsWith("`") &&
+                    segment.endsWith("`")
+                ) {
+                    const code = document.createElement("code");
+                    code.className = "inline-code";
+                    code.textContent = segment.slice(1, -1);
+                    container.appendChild(code);
+                } else {
+                    container.appendChild(
+                        document.createTextNode(segment)
+                    );
+                }
+            });
         }
-    });
-}
 
-                });
-            }
-
-            if (index < lines.length - 1) {
-                container.appendChild(document.createElement("br"));
-            }
-        });
+        if (index < lines.length - 1) {
+            container.appendChild(document.createElement("br"));
+        }
     });
 }
 
