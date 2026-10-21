@@ -546,6 +546,83 @@ body,
     }
 }
 
+/* Sidebar buttons — exact existing classes */
+.sidebar .btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    background: #edf5ff;
+    color: #2869c8;
+    border: 1px solid #dceaff;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sidebar .btn:hover {
+    background: #dfedff;
+    border-color: #c3dcff;
+    color: #1757ad;
+    transform: translateY(-1px);
+}
+
+.sidebar .btn.new-chat {
+    justify-content: center;
+    background: linear-gradient(110deg, #3985f6, #55c5f3);
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 5px 16px #347ff320;
+}
+
+.sidebar .btn.new-chat:hover {
+    background: linear-gradient(110deg, #286ee0, #36b3e9);
+}
+
+/* Sidebar headings and history */
+.sidebar .section-label {
+    color: #8293ab;
+}
+
+.sidebar .history {
+    color: #344967;
+}
+
+.sidebar .sidebar-footer {
+    color: #8190a5;
+    border-color: #e1eafa;
+}
+
+/* Saved memories popup */
+#memoriesModal > div {
+    background: linear-gradient(145deg, #ffffff, #f2f7ff) !important;
+    color: #1b2940;
+    border: 1px solid #dce8f8 !important;
+    border-radius: 22px !important;
+    box-shadow: 0 20px 60px #153b701f;
+}
+
+#memoriesModal h2 {
+    color: #1b2940;
+}
+
+#memoriesList {
+    color: #344967;
+}
+
+#closeMemoriesBtn {
+    width: auto;
+    background: #eaf3ff;
+    color: #2869c8;
+    border: 1px solid #dceaff;
+    border-radius: 12px;
+}
+
 </style>
 </head>
 <body>
