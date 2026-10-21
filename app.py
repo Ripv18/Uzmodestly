@@ -617,7 +617,6 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
 
     if not has_file and question:
         lowered = question.casefold().strip()
-
         if lowered.startswith("qidir:"):
             app.logger.info("QIDIRISH BUYRUGI TOPILDI: %s", question)
             search_query = question[6:].strip()
@@ -630,19 +629,19 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
                     web_results[:500]
                 )
 
-
-
-    
-         if web_results:
-
-
-
-
-
-
-
-             
+    if web_results:
         safe_messages.insert(1, {
+            "role": "system",
+            "content": (
+                "INTERNET QIDIRUVI QOIDALARI:\n"
+                "Faqat qidiruv natijalaridagi faktlardan foydalan. "
+                "Ma'lumot yoki sanalarni to'qima. "
+                "Natijalar yetarli bo'lmasa, buni ayt. "
+                "O'zbek tilida javob ber va manba URLlarini ko'rsat.\n\n"
+                "QIDIRUV NATIJALARI:\n"
+                + web_results[:10000]
+            ),
+        })
             "role": "system",
             "content": (
                 "INTERNET QIDIRUVI QOIDALARI:\n"
