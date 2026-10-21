@@ -14,9 +14,10 @@ from werkzeug.utils import secure_filename
 import memory
 
 try:
-  from PIL import Image, ImageOps
+    from PIL import Image, ImageOps
 except ImportError:
     Image = None
+    ImageOps = None
 
 try:
     from pypdf import PdfReader
@@ -148,8 +149,8 @@ def read_attachment(file):
     ext = filename.rsplit(".", 1)[1].lower()
 
     if ext in IMAGE_EXTENSIONS:
-        if Image is None:
-            raise ValueError("Rasmni o‘qish uchun Pillow kutubxonasi kerak.")
+        if Image is None or ImageOps is None:
+            raise ValueError("Rasm uchun Pillow kutubxonasi kerak.")
 
         try:
             with Image.open(io.BytesIO(raw_bytes)) as image:
@@ -165,10 +166,12 @@ def read_attachment(file):
                     buffer,
                     format="JPEG",
                     quality=92,
-                    optimize=True
+                    optimize=True,
                 )
-        
-            encoded = base64.b64encode(buffer.getvalue()).decode("ascii")
+
+            encoded = base64.b64encode(
+                buffer.getvalue()
+            ).decode("ascii")
 
         except Exception as exc:
             raise ValueError("Rasmni o‘qib bo‘lmadi.") from exc
@@ -196,14 +199,17 @@ def file_too_large(_error):
 @app.route("/")
 def home():
     return send_from_directory(".", "index.html")
-    
+
+
 @app.route("/google60ac72fbd987c0b6.html")
 def google_verify():
     return send_from_directory(".", "google60ac72fbd987c0b6.html")
 
+
 @app.route("/api/conversations", methods=["GET"])
 def conversations():
     return jsonify(memory.list_conversations())
+
 
 @app.route("/api/conversations", methods=["POST"])
 def new_conversation():
@@ -305,8 +311,6 @@ def chat():
             "error": "Limit tugadi. Bir daqiqadan keyin urin."
         }), 429
 
-
-
     system_prompt = """
 SENING SHAXSING VA JAVOB BERISH QOIDALARI:
 
@@ -327,7 +331,6 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
 12. Markdown bezaklari va LaTeX formulalarini ishlatma.
 13. Kod so'ralsa, to'liq va ishlaydigan kod ber.
 """
-
 
     safe_messages = [{
         "role": "system",
@@ -368,7 +371,6 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
             "error": "Suhbat xotirasini o‘qib bo‘lmadi."
         }), 500
 
-   
     saved_question = question or "Yuborilgan faylni tahlil qil."
     user_content = saved_question
 
@@ -404,8 +406,6 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
                 },
             ]
 
-        else:
-           
     try:
         memory.save_message(cid, "user", saved_question)
         safe_messages.append({
@@ -457,7 +457,6 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
                     )
                     return
 
-                # Server javobini UTF-8 sifatida o‘qiymiz.
                 for line in response.iter_lines(decode_unicode=False):
                     if not line:
                         continue
@@ -520,4 +519,4 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
 if __name__ == "__main__":
     memory.init_db()
     port = int(os.environ.get("PORT", "5000"))
-    app.run(host="127.0.0.1", port=port, debug=False)
+    app.run(host="0.0.0.0", port=port, debug=False)
