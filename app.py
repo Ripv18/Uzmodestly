@@ -287,9 +287,6 @@ def file_too_large(_error):
 
 @app.route("/")
 def home():
-    if not session.get("user_id"):
-        return redirect(url_for("google_login"))
-
     return send_from_directory(".", "index.html")
 @app.route("/google60ac72fbd987c0b6.html")
 def google_verify():
