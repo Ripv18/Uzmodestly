@@ -131,7 +131,10 @@ def allowed_file(filename):
         return False
 
     ext = filename.rsplit(".", 1)[1].lower()
-    return ext in IMAGE_EXTENSIONS | DOCUMENT_EXTENSIONSdef extract_document(filename, raw_bytes):
+    return ext in IMAGE_EXTENSIONS | DOCUMENT_EXTENSIONS
+
+
+def extract_document(filename, raw_bytes):
     """PDF yoki DOCX hujjatidan matn ajratadi."""
     ext = filename.rsplit(".", 1)[1].lower()
 
