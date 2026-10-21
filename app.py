@@ -37,11 +37,16 @@ app.json.ensure_ascii = False
 logging.basicConfig(level=logging.INFO)
 
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
+MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-20b")
+VISION_MODEL = os.environ.get("GROQ_VISION_MODEL", "qwen/qwen3.8-27b")
+
+
 def search_internet(query):
+    """Tavily orqali internetdan qidiradi."""
     api_key = os.environ.get("TAVILY_API_KEY", "").strip()
 
     if not api_key:
-        return "Internet qidiruvi sozlanmagan."
+        return "Internet qidiruvi sozlanmagan: TAVILY_API_KEY yo‘q."
 
     try:
         response = requests.post(
@@ -51,9 +56,9 @@ def search_internet(query):
                 "query": query,
                 "search_depth": "basic",
                 "max_results": 5,
-                "include_answer": True
+                "include_answer": True,
             },
-            timeout=15
+            timeout=15,
         )
         response.raise_for_status()
         data = response.json()
@@ -61,7 +66,7 @@ def search_internet(query):
         results = []
 
         if data.get("answer"):
-            results.append("QISQA JAVOB: " + data["answer"])
+            results.append("QISQA JAVOB: " + str(data["answer"]))
 
         for item in data.get("results", []):
             title = item.get("title", "")
@@ -77,8 +82,7 @@ def search_internet(query):
     except Exception:
         app.logger.exception("Internet qidiruvida xato")
         return "Internet qidiruvi vaqtincha ishlamadi."
-MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-20b")
-VISION_MODEL = os.environ.get("GROQ_VISION_MODEL", "qwen/qwen3.8-27b")
+
 
 IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
 DOCUMENT_EXTENSIONS = {"pdf", "docx"}
@@ -88,6 +92,7 @@ requests_by_ip = defaultdict(deque)
 def get_user_id():
     """Brauzer yuborgan UUID ni tekshiradi."""
     raw_id = request.headers.get("X-User-ID", "").strip()
+
     try:
         return str(uuid.UUID(raw_id))
     except (ValueError, AttributeError, TypeError):
@@ -117,17 +122,16 @@ def repair_text(text):
 
     for wrong, correct in replacements.items():
         text = text.replace(wrong, correct)
+
     return text
 
 
 def allowed_file(filename):
     if "." not in filename:
         return False
+
     ext = filename.rsplit(".", 1)[1].lower()
-    return ext in IMAGE_EXTENSIONS | DOCUMENT_EXTENSIONS
-
-
-def extract_document(filename, raw_bytes):
+    return ext in IMAGE_EXTENSIONS | DOCUMENT_EXTENSIONSdef extract_document(filename, raw_bytes):
     """PDF yoki DOCX hujjatidan matn ajratadi."""
     ext = filename.rsplit(".", 1)[1].lower()
 
@@ -136,6 +140,7 @@ def extract_document(filename, raw_bytes):
             raise ValueError("PDF uchun pypdf kutubxonasi kerak.")
 
         reader = PdfReader(io.BytesIO(raw_bytes))
+
         if reader.is_encrypted:
             raise ValueError("Parolli PDF hozircha qo‘llanmaydi.")
 
@@ -144,11 +149,13 @@ def extract_document(filename, raw_bytes):
             parts.append(page.extract_text() or "")
 
         text = "\n".join(parts).strip()
+
         if not text:
             raise ValueError(
                 "PDF ichidan matn topilmadi. "
                 "Skanerlangan hujjatni rasm sifatida yuborib ko‘r."
             )
+
         return text[:40000]
 
     if ext == "docx":
@@ -156,15 +163,22 @@ def extract_document(filename, raw_bytes):
             raise ValueError("Word fayli uchun python-docx kerak.")
 
         document = Document(io.BytesIO(raw_bytes))
-        parts = [p.text for p in document.paragraphs if p.text.strip()]
+        parts = [
+            p.text for p in document.paragraphs
+            if p.text.strip()
+        ]
 
         for table in document.tables:
             for row in table.rows:
-                parts.append(" | ".join(cell.text for cell in row.cells))
+                parts.append(
+                    " | ".join(cell.text for cell in row.cells)
+                )
 
         text = "\n".join(parts).strip()
+
         if not text:
             raise ValueError("Word faylidan matn topilmadi.")
+
         return text[:40000]
 
     raise ValueError("Bu hujjat turi qo‘llab-quvvatlanmaydi.")
@@ -173,14 +187,17 @@ def extract_document(filename, raw_bytes):
 def read_attachment(file):
     """Rasm yoki hujjatni AI uchun tayyorlaydi."""
     filename = secure_filename(file.filename or "")
+
     if not filename or not allowed_file(filename):
         raise ValueError(
             "Faqat PNG, JPG, JPEG, WEBP, PDF yoki DOCX yubor."
         )
 
     raw_bytes = file.read()
+
     if not raw_bytes:
         raise ValueError("Tanlangan fayl bo‘sh.")
+
     if len(raw_bytes) > 10 * 1024 * 1024:
         raise ValueError("Fayl hajmi 10 MB dan oshmasligi kerak.")
 
@@ -210,6 +227,7 @@ def read_attachment(file):
             encoded = base64.b64encode(
                 buffer.getvalue()
             ).decode("ascii")
+
         except Exception as exc:
             raise ValueError("Rasmni o‘qib bo‘lmadi.") from exc
 
@@ -236,14 +254,7 @@ def file_too_large(_error):
 @app.route("/")
 def home():
     return send_from_directory(".", "index.html")
-    
-@app.route("/logo.png")
-def logo():
-    return send_from_directory(
-        os.path.dirname(os.path.abspath(__file__)),
-        "logo.png",
-        mimetype="image/png"
-    )
+
 
 @app.route("/google60ac72fbd987c0b6.html")
 def google_verify():
@@ -253,8 +264,11 @@ def google_verify():
 @app.route("/api/conversations", methods=["GET"])
 def conversations():
     user_id = get_user_id()
+
     if not user_id:
-        return jsonify({"error": "Foydalanuvchi ID noto‘g‘ri yoki yo‘q."}), 400
+        return jsonify({
+            "error": "Foydalanuvchi ID noto‘g‘ri yoki yo‘q."
+        }), 400
 
     return jsonify(memory.list_conversations(user_id=user_id))
 
@@ -262,12 +276,20 @@ def conversations():
 @app.route("/api/conversations", methods=["POST"])
 def new_conversation():
     user_id = get_user_id()
+
     if not user_id:
-        return jsonify({"error": "Foydalanuvchi ID noto‘g‘ri yoki yo‘q."}), 400
+        return jsonify({
+            "error": "Foydalanuvchi ID noto‘g‘ri yoki yo‘q."
+        }), 400
 
     try:
         cid = memory.create_conversation(user_id=user_id)
-        return jsonify({"id": cid, "title": "Yangi suhbat"})
+
+        return jsonify({
+            "id": cid,
+            "title": "Yangi suhbat",
+        })
+
     except Exception:
         app.logger.exception("Suhbat yaratishda xato")
         return jsonify({"error": "Suhbat yaratilmadi."}), 500
@@ -276,8 +298,11 @@ def new_conversation():
 @app.route("/api/conversations/<int:cid>", methods=["GET"])
 def conversation_detail(cid):
     user_id = get_user_id()
+
     if not user_id:
-        return jsonify({"error": "Foydalanuvchi ID noto‘g‘ri yoki yo‘q."}), 400
+        return jsonify({
+            "error": "Foydalanuvchi ID noto‘g‘ri yoki yo‘q."
+        }), 400
 
     if not memory.conversation_belongs_to(cid, user_id):
         return jsonify({"error": "Suhbat topilmadi."}), 404
@@ -285,7 +310,9 @@ def conversation_detail(cid):
     return jsonify({
         "id": cid,
         "messages": memory.get_messages(
-            cid, limit=1000, user_id=user_id
+            cid,
+            limit=1000,
+            user_id=user_id,
         ),
     })
 
@@ -293,11 +320,18 @@ def conversation_detail(cid):
 @app.route("/api/conversations/<int:cid>", methods=["DELETE"])
 def delete_conversation(cid):
     user_id = get_user_id()
+
     if not user_id:
-        return jsonify({"error": "Foydalanuvchi ID noto‘g‘ri yoki yo‘q."}), 400
+        return jsonify({
+            "error": "Foydalanuvchi ID noto‘g‘ri yoki yo‘q."
+        }), 400
 
     try:
-        deleted = memory.delete_conversation(cid, user_id=user_id)
+        deleted = memory.delete_conversation(
+            cid,
+            user_id=user_id,
+        )
+
         if not deleted:
             return jsonify({"error": "Suhbat topilmadi."}), 404
 
@@ -305,437 +339,315 @@ def delete_conversation(cid):
             "success": True,
             "message": "Suhbat o‘chirildi.",
         })
+
     except Exception:
         app.logger.exception("Suhbatni o‘chirishda xato")
         return jsonify({"error": "Suhbat o‘chirilmadi."}), 500
-@app.route("/api/memories", methods=["GET"])
-def list_memories():
-    user_id = get_user_id()
-
-    if not user_id:
-        return jsonify({"error": "Foydalanuvchi ID noto‘g‘ri."}), 400
-
-    try:
-        items = memory.get_memories(user_id=user_id, limit=100)
-        return jsonify({"memories": items})
-    except Exception:
-        app.logger.exception("Xotiralarni olishda xato")
-        return jsonify({"error": "Xotiralarni olib bo‘lmadi."}), 500
+        def get_system_prompt():
+    return (
+        "Sen Uzmodestly AI yordamchisisan. "
+        "Foydalanuvchiga o'zbek tilida aniq, foydali va tushunarli javob ber. "
+        "Agar bilmasang, bilmasligingni ayt. "
+        "Faktlar, sanalar yoki manbalarni to'qib chiqarmagin."
+    )
 
 
-@app.route("/api/memories/<int:memory_id>", methods=["DELETE"])
-def delete_memory(memory_id):
-    user_id = get_user_id()
+def call_groq(messages, model=None):
+    api_key = os.environ.get("GROQ_API_KEY", "").strip()
 
-    if not user_id:
-        return jsonify({"error": "Foydalanuvchi ID noto‘g‘ri."}), 400
+    if not api_key:
+        raise RuntimeError("GROQ_API_KEY Render sozlamalarida yo'q.")
 
-    try:
-        deleted = memory.forget(memory_id, user_id=user_id)
+    selected_model = model or MODEL
 
-        if not deleted:
-            return jsonify({"error": "Xotira topilmadi."}), 404
+    response = requests.post(
+        GROQ_URL,
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "model": selected_model,
+            "messages": messages,
+            "temperature": 0.4,
+            "max_tokens": 4096,
+        },
+        timeout=90,
+    )
 
-        return jsonify({"success": True})
-    except Exception:
-        app.logger.exception("Xotirani o‘chirishda xato")
-        return jsonify({"error": "Xotirani o‘chirib bo‘lmadi."}), 500
+    if not response.ok:
+        app.logger.error(
+            "Groq API xatosi: %s %s",
+            response.status_code,
+            response.text[:1000],
+        )
+        response.raise_for_status()
 
-@app.route("/api/chat", methods=["POST"])
+    data = response.json()
+    choices = data.get("choices", [])
+
+    if not choices:
+        raise RuntimeError("AI bo'sh javob qaytardi.")
+
+    message = choices[0].get("message", {})
+    content = message.get("content", "")
+
+    if isinstance(content, str):
+        return repair_text(content).strip()
+
+    if isinstance(content, list):
+        text_parts = []
+        for item in content:
+            if isinstance(item, dict) and item.get("type") == "text":
+                text_parts.append(item.get("text", ""))
+        return repair_text("\n".join(text_parts)).strip()
+
+    return "AI javob tayyorlay olmadi."
+
+
+def build_search_context(results):
+    return (
+        "Quyida internet qidiruvi natijalari keltirilgan.\n"
+        "Javobda faqat ushbu natijalar tasdiqlaydigan faktlardan foydalan.\n"
+        "Manbada ko'rsatilmagan sana yoki faktni taxmin qilma.\n"
+        "Agar natijalar yetarli bo'lmasa, buni ochiq ayt.\n"
+        "Javob oxirida foydalanilgan manbalarning URL manzillarini ko'rsat.\n\n"
+        "QIDIRUV NATIJALARI:\n"
+        + results[:10000]
+    )
+
+
+def generate_answer(question, history=None, attachment=None):
+    messages = [
+        {
+            "role": "system",
+            "content": get_system_prompt(),
+        }
+    ]
+
+    if history:
+        messages.extend(history[-20:])
+
+    if attachment and attachment.get("type") == "image":
+        user_content = [
+            {
+                "type": "text",
+                "text": question or "Ushbu rasmni tahlil qilib ber.",
+            },
+            {
+                "type": "image_url",
+                "image_url": {
+                    "url": attachment["data_url"],
+                },
+            },
+        ]
+
+        messages.append({
+            "role": "user",
+            "content": user_content,
+        })
+
+        return call_groq(messages, VISION_MODEL)
+
+    if attachment and attachment.get("type") == "document":
+        question = (
+            (question + "\n\n") if question else ""
+        ) + (
+            "Yuborilgan hujjat: "
+            + attachment["name"]
+            + "\n\nHUJJAT MATNI:\n"
+            + attachment["text"][:30000]
+        )
+
+    lowered = question.casefold().strip()
+
+    if lowered.startswith("qidir:"):
+        query = question[6:].strip()
+
+        if query:
+            results = search_internet(query)
+            question = (
+                "Foydalanuvchi so'rovi: "
+                + query
+                + "\n\n"
+                + build_search_context(results)
+            )
+
+    messages.append({
+        "role": "user",
+        "content": question,
+    })
+
+    return call_groq(messages)
+    @app.route("/api/chat", methods=["POST"])
 def chat():
     user_id = get_user_id()
-    user_name = request.headers.get("X-User-Name", "").strip()[:50]
 
     if not user_id:
-        return jsonify({"error": "Foydalanuvchi ID noto‘g‘ri yoki yo‘q."}), 400
+        return jsonify({
+            "error": "Foydalanuvchi ID noto‘g‘ri yoki yo‘q."
+        }), 400
 
-    api_key = os.environ.get("GROQ_API_KEY", "").strip()
-    if not api_key:
-        return jsonify({"error": "GROQ_API_KEY sozlanmagan."}), 503
-
+    user_name = request.headers.get("X-User-Name", "").strip()[:50]
     question = (request.form.get("message") or "").strip()[:3000]
     uploaded_file = request.files.get("file")
-    has_file = bool(uploaded_file and uploaded_file.filename)
-
-    if not question and not has_file:
-        return jsonify({"error": "Xabar yoz yoki fayl yubor."}), 400
-
-    raw_cid = request.form.get("conversation_id")
-    try:
-        cid = int(raw_cid) if raw_cid else None
-    except (TypeError, ValueError):
-        return jsonify({"error": "Suhbat ID noto‘g‘ri."}), 400
-
     attachment = None
-    if has_file:
+
+    if not question and not (
+        uploaded_file and uploaded_file.filename
+    ):
+        return jsonify({
+            "error": "Xabar yoz yoki fayl yubor."
+        }), 400
+
+    if uploaded_file and uploaded_file.filename:
         try:
             attachment = read_attachment(uploaded_file)
         except ValueError as exc:
             return jsonify({"error": str(exc)}), 400
+        except Exception:
+            app.logger.exception("Faylni o‘qishda xato")
+            return jsonify({
+                "error": "Faylni o‘qib bo‘lmadi."
+            }), 400
+
+    raw_cid = request.form.get("conversation_id")
+
+    try:
+        cid = int(raw_cid) if raw_cid else None
+    except (TypeError, ValueError):
+        cid = None
 
     if cid is None:
         try:
             cid = memory.create_conversation(user_id=user_id)
         except Exception:
-            app.logger.exception("Suhbat yaratilmadi")
-            return jsonify({"error": "Suhbat yaratilmadi."}), 500
+            app.logger.exception("Suhbat yaratishda xato")
+            return jsonify({
+                "error": "Yangi suhbat yaratilmadi."
+            }), 500
 
     if not memory.conversation_belongs_to(cid, user_id):
         return jsonify({"error": "Suhbat topilmadi."}), 404
 
-    ip = request.remote_addr or "unknown"
-    now = time.time()
-    recent = requests_by_ip[ip]
-
-    while recent and now - recent[0] > 60:
-        recent.popleft()
-    if len(recent) >= 10:
-        return jsonify({
-            "error": "Limit tugadi. Bir daqiqadan keyin urin."
-        }), 429
-    # Foydalanuvchining xotira buyruqlari
-    memory_action = ""
-
-    if not attachment and question:
-        lowered_question = question.casefold().strip()
-
-        if lowered_question.startswith("eslab qol:"):
-            memory_text = question.split(":", 1)[1].strip()
-
-            if memory_text:
-                saved = memory.remember(
-                    memory_text,
-                    user_id=user_id,
-                )
-
-                memory_action = (
-                    "Ma'lumot xotiraga saqlandi."
-                    if saved
-                    else "Bu ma'lumot xotirada allaqachon bor."
-                )
-            else:
-                memory_action = (
-                    "Foydalanuvchidan eslab qolish uchun "
-                    "ma'lumot yozishini so'ra."
-                )
-
-        elif lowered_question.startswith("eslab qol "):
-            memory_text = question[len("eslab qol "):].strip()
-
-            if memory_text:
-                saved = memory.remember(
-                    memory_text,
-                    user_id=user_id,
-                )
-
-                memory_action = (
-                    "Ma'lumot xotiraga saqlandi."
-                    if saved
-                    else "Bu ma'lumot xotirada allaqachon bor."
-                )
-
-        elif lowered_question.startswith("unut:"):
-            memory_text = question.split(":", 1)[1].strip()
-
-            removed = (
-                memory.forget_matching(
-                    memory_text,
-                    user_id=user_id,
-                )
-                if memory_text
-                else 0
-            )
-
-            memory_action = (
-                "So'ralgan xotira o'chirildi."
-                if removed
-                else "O'chiriladigan xotira topilmadi."
-            )
-    system_prompt = """
-SENING SHAXSING VA JAVOB BERISH QOIDALARI:
-
-1. Sening noming Uzmodestly AI.
-2. "Isming nima?" deyilsa, "Men Uzmodestly AI man" deb javob ber.
-3. "Seni kim yaratgan?" yoki "Xo'jayining kim?" deyilsa,
-   "Meni Behruz Tojimurodov yaratgan" deb javob ber.
-4. O'zingni ChatGPT deb tanishtirma.
-5. O'zbek tilida tabiiy, sodda va tushunarli javob ber.
-6. Oddiy va xavfsiz savollarga asossiz ravishda
-   "I can't help with that" deb javob berma.
-7. Javob bera olmasang, sababini o'zbek tilida tushuntir.
-8. Matematik masalalarni tekshirib, bosqichma-bosqich yech.
-9. Rasm yuborilsa, undagi ko'rinadigan narsalar,
-   yozuvlar va masalalarni diqqat bilan tahlil qil.
-10. Rasm xira yoki yozuvlar o'qilmasa, buni ochiq ayt.
-11. Bilmagan narsangni to'qib chiqarma.
-12. Oddiy javoblarda ortiqcha Markdown bezaklari va LaTeX ishlatma.
-13. Kod so'ralsa, to'liq va ishlaydigan kod ber.
-"""
-
-    if user_name:
-        system_prompt += (
-            "\n\nFOYDALANUVCHI HAQIDA:"
-            f"\nFoydalanuvchining ismi: {user_name}."
-            "\nAgar foydalanuvchi o‘z ismini so‘rasa, aynan shu ismni ayt."
-            "\nIsmni boshqa odamlar bilan aralashtirma."
-        )
-    if memory_action:
-        system_prompt += (
-            "\n\nXOTIRA AMALI: " + memory_action
-            + "\nFoydalanuvchiga natijani qisqa va rost ayt."
-        )
-
     try:
-        saved_memories = memory.get_memories(
-            user_id=user_id,
-            limit=25,
-        )
-
-        if saved_memories:
-            memory_text = "\n".join(
-                "- " + item["content"]
-                for item in saved_memories
-            )
-
-            system_prompt += (
-                "\n\nFOYDALANUVCHINING SHAXSIY XOTIRASI:"
-                "\nQuyidagi ma'lumotlardan kerak bo'lganda foydalan."
-                "\nFoydalanuvchi nimalarni eslayotganingni so'rasa, "
-                "shu ma'lumotlar asosida javob ber."
-                "\n" + memory_text[:5000]
-            )
-
-    except Exception:
-        app.logger.exception("Shaxsiy xotirani o'qishda xato")
-   
-    safe_messages = [{"role": "system", "content": system_prompt}]
-
-    try:
-        saved_memories = memory.get_memories(
-            user_id=user_id, limit=25
-        )
-
-        if saved_memories:
-            facts = "\n".join(
-                "- " + item["content"]
-                for item in saved_memories
-            )
-            safe_messages.append({
-                "role": "system",
-                "content": (
-                    "FOYDALANUVCHINING SHAXSIY XOTIRASI. "
-                    "Faqat shu foydalanuvchiga tegishli. "
-                    "Savolga aloqador bo'lsa foydalan:\n"
-                    + facts[:5000]
-                ),
-            })
-
-        old_context = memory.get_recent_context(
-            exclude_conversation_id=cid,
-            limit=12,
+        history_items = memory.get_messages(
+            cid,
+            limit=30,
             user_id=user_id,
         )
 
-        if old_context:
-            context_text = "\n".join(
-                f"[{item['title']}] {item['role']}: {item['content']}"
-                for item in old_context
-            )
-            safe_messages.append({
-                "role": "system",
-                "content": (
-                    "Shu foydalanuvchining oldingi suhbatlari. "
-                    "Faqat kerakli bo'lsa foydalan:\n"
-                    + context_text[:6000]
-                ),
-            })
+        history = []
 
-        for item in memory.get_messages(
-            cid, limit=30, user_id=user_id
-        ):
-            if item["role"] in ("user", "assistant"):
-                safe_messages.append({
-                    "role": item["role"],
-                    "content": item["content"][:3000],
+        for item in history_items:
+            role = item.get("role", "")
+            content = item.get("content", "")
+
+            if role in ("user", "assistant") and isinstance(content, str):
+                history.append({
+                    "role": role,
+                    "content": content[:6000],
                 })
 
-    except Exception:
-        app.logger.exception("Xotirani o'qishda xato")
+        answer = generate_answer(
+            question=question,
+            history=history,
+            attachment=attachment,
+        )
+
+        if not answer:
+            answer = "Kechirasiz, javob yaratilmadi."
+
+              if question:
+            memory.save_message(
+                cid,
+                "user",
+                question,
+                user_id=user_id,
+            )
+
+        elif attachment:
+            memory.save_message(
+                cid,
+                "user",
+                "Fayl yuborildi: " + attachment["name"],
+                user_id=user_id,
+            )
+
+        memory.save_message(
+            cid,
+            "assistant",
+            answer,
+            user_id=user_id,
+        )
+
         return jsonify({
-            "error": "Suhbat xotirasini o'qib bo'lmadi."
+            "answer": answer,
+            "response": answer,
+            "conversation_id": cid,
+        })
+
+    except Exception:
+        app.logger.exception("Chat API xatosi")
+        return jsonify({
+            "error": "Javob yaratishda xatolik. Loglarni tekshiring."
         }), 500
 
-    saved_question = question or "Yuborilgan faylni tahlil qil."
-    user_content = saved_question
 
-    if attachment:
-        saved_question = f"[Fayl: {attachment['name']}]\n{saved_question}"
+@app.route("/api/memories", methods=["GET"])
+def list_memories():
+    user_id = get_user_id()
 
-        if attachment["type"] == "document":
-            user_content += (
-                f"\n\nFayl: {attachment['name']}\n"
-                "Fayldan ajratilgan matn:\n"
-                + attachment["text"]
-            )
-        else:
-            user_content = [
-                {
-                    "type": "text",
-                    "text": (
-                        user_content
-                        + "\n\nRASM TAHLILI QOIDALARI:"
-                        + "\n1. Rasm matnini diqqat bilan o‘qi."
-                        + "\n2. Sonlar, ishoralar, kasrlar va formulalarni tekshir."
-                        + "\n3. Masala shartini o‘zgartirma."
-                        + "\n4. Noaniq belgilarni taxmin qilma."
-                        + "\n5. Masalani bosqichma-bosqich yech."
-                        + "\n6. Javobni qayta tekshir."
-                    ),
-                },
-                {
-                    "type": "image_url",
-                    "image_url": {"url": attachment["data_url"]},
-                },
-            ]
+    if not user_id:
+        return jsonify({
+            "error": "Foydalanuvchi ID noto‘g‘ri."
+        }), 400
 
     try:
-        memory.save_message(
-            cid, "user", saved_question, user_id=user_id
+        items = memory.get_memories(
+            user_id=user_id,
+            limit=100,
         )
-        safe_messages.append({
-            "role": "user",
-            "content": user_content,
-        })
+
+        return jsonify({"memories": items})
+
     except Exception:
-        app.logger.exception("Xabarni saqlashda xato")
-        return jsonify({"error": "Xabar saqlanmadi."}), 500
+        app.logger.exception("Xotiralarni olishda xato")
+        return jsonify({
+            "error": "Xotiralarni olib bo‘lmadi."
+        }), 500
 
-    recent.append(now)
-        # Faqat "qidir:" buyrug'i bilan internetdan izlash
-    # Faqat "qidir:" buyrug'i bilan internetdan izlash
-       web_results = ""
 
-    if not has_file and question:
-        lowered = question.casefold().strip()
+@app.route("/api/memories", methods=["DELETE"])
+def clear_memories():
+    user_id = get_user_id()
 
-        if lowered.startswith("qidir:"):
-            app.logger.info("QIDIRISH BUYRUGI TOPILDI: %s", question)
-            search_query = question[6:].strip()
+    if not user_id:
+        return jsonify({
+            "error": "Foydalanuvchi ID noto‘g‘ri."
+        }), 400
 
-            if search_query:
-                app.logger.info("TAVILY QIDIRUV BOSHLANDI")
-                web_results = search_internet(search_query)
-                app.logger.info(
-                    "WEB SEARCH RESULT: %s",
-                    web_results[:500]
-                )
+    try:
+        memory.clear_memories(user_id=user_id)
 
-    if web_results:
-        safe_messages.insert(1, {
-            "role": "system",
-            "content": (
-                "INTERNET QIDIRUVI QOIDALARI:\n"
-                "Faqat qidiruv natijalarida mavjud faktlardan foydalan. "
-                "Ma'lumot yoki sanalarni to'qima. "
-                "Natijalar yetarli bo'lmasa, buni ayt. "
-                "O'zbek tilida javob ber va manba URLlarini ko'rsat.\n\n"
-                "QIDIRUV NATIJALARI:\n"
-                + web_results[:10000]
-            ),
+        return jsonify({
+            "success": True,
+            "message": "Xotiralar tozalandi.",
         })
 
-    selected_model = (
-        VISION_MODEL
-        if attachment and attachment["type"] == "image"
-        else MODEL
-    )
-
-    def generate():
-        reply_parts = []
-
-        try:
-            with requests.post(
-                GROQ_URL,
-                headers={
-                    "Authorization": f"Bearer {api_key}",
-                    "Content-Type": "application/json",
-                },
-                json={
-                    "model": selected_model,
-                    "messages": safe_messages[-31:],
-                    "temperature": 0.4,
-                    "max_tokens": 1200,
-                    "stream": True,
-                },
-                stream=True,
-                timeout=(10, 120),
-            ) as response:
-
-                if not response.ok:
-                    app.logger.error(
-                        "Groq API HTTP %s: %s",
-                        response.status_code,
-                        response.text[:500],
-                    )
-                    yield (
-                        "AI API xatosi. Model nomi, limit yoki "
-                        "API kalit sozlamalarini tekshir."
-                    )
-                    return
-
-                for line in response.iter_lines(decode_unicode=False):
-                    if not line:
-                        continue
-
-                    try:
-                        line = line.decode("utf-8", errors="replace")
-                    except AttributeError:
-                        pass
-
-                    if not line.startswith("data:"):
-                        continue
-
-                    payload = line[5:].strip()
-                    if payload == "[DONE]":
-                        break
-
-                    try:
-                        obj = json.loads(payload)
-                        part = obj["choices"][0]["delta"].get("content")
-                        if isinstance(part, str) and part:
-                            reply_parts.append(part)
-                    except (
-                        ValueError, KeyError, IndexError, TypeError
-                    ):
-                        continue
-
-            reply = repair_text("".join(reply_parts)).strip()
-            if not reply:
-                yield "Javob olinmadi. Qayta urinib ko‘r."
-                return
-
-            memory.save_message(
-                cid, "assistant", reply, user_id=user_id
-            )
-            yield reply
-
-        except requests.RequestException:
-            app.logger.exception("Groq API ulanish xatosi")
-            yield "AI serveriga ulanib bo‘lmadi. Keyinroq urin."
-        except Exception:
-            app.logger.exception("Javob tayyorlashda xato")
-            yield "Javob tayyorlashda xato yuz berdi."
-
-    return Response(
-        stream_with_context(generate()),
-        content_type="text/plain; charset=utf-8",
-        headers={
-            "Cache-Control": "no-cache",
-            "X-Accel-Buffering": "no",
-        },
-    )
+    except Exception:
+        app.logger.exception("Xotiralarni tozalashda xato")
+        return jsonify({
+            "error": "Xotiralarni tozalab bo‘lmadi."
+        }), 500
+        @app.route("/health", methods=["GET"])
+def health():
+    return jsonify({
+        "status": "ok",
+        "app": "Uzmodestly AI",
+    })
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", "5000"))
+    port = int(os.environ.get("PORT", "10000"))
     app.run(host="0.0.0.0", port=port, debug=False)
