@@ -431,7 +431,63 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
         app.logger.exception("Shaxsiy xotirani o'qishda xato")
     safe_messages = [{"role": "system", "content": system_prompt}]
 
+  
+    memory_action = ""
+
+    if question and not attachment:
+        lowered = question.casefold().strip()
+
+        if lowered.startswith("eslab qol:"):
+            fact = question.split(":", 1)[1].strip()
+            if fact:
+                saved = memory.remember(fact, user_id=user_id)
+                memory_action = (
+                    "Ma'lumot xotiraga saqlandi."
+                    if saved
+                    else "Bu ma'lumot avval ham saqlangan."
+                )
+            else:
+                memory_action = "Eslab qolish uchun ma'lumot so'ra."
+
+        elif lowered.startswith("unut:"):
+            fact = question.split(":", 1)[1].strip()
+            removed = memory.forget_matching(
+                fact, user_id=user_id
+            ) if fact else 0
+            memory_action = (
+                "Xotira o'chirildi."
+                if removed
+                else "Mos xotira topilmadi."
+            )
+
+    if memory_action:
+        system_prompt += (
+            "\n\nXOTIRA BUYRUG'I: " + memory_action
+            + "\nNatijani foydalanuvchiga rost va qisqa tushuntir."
+        )
+
+    safe_messages = [{"role": "system", "content": system_prompt}]
+
     try:
+        saved_memories = memory.get_memories(
+            user_id=user_id, limit=25
+        )
+
+        if saved_memories:
+            facts = "\n".join(
+                "- " + item["content"]
+                for item in saved_memories
+            )
+            safe_messages.append({
+                "role": "system",
+                "content": (
+                    "FOYDALANUVCHINING SHAXSIY XOTIRASI. "
+                    "Faqat shu foydalanuvchiga tegishli. "
+                    "Savolga aloqador bo'lsa foydalan:\n"
+                    + facts[:5000]
+                ),
+            })
+
         old_context = memory.get_recent_context(
             exclude_conversation_id=cid,
             limit=12,
@@ -446,8 +502,8 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
             safe_messages.append({
                 "role": "system",
                 "content": (
-                    "Ushbu foydalanuvchining oldingi suhbatlaridan "
-                    "olingan kontekst. Tegishli bo‘lsa foydalan:\n"
+                    "Shu foydalanuvchining oldingi suhbatlari. "
+                    "Faqat kerakli bo'lsa foydalan:\n"
                     + context_text[:6000]
                 ),
             })
@@ -462,9 +518,9 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
                 })
 
     except Exception:
-        app.logger.exception("Xotirani o‘qishda xato")
+        app.logger.exception("Xotirani o'qishda xato")
         return jsonify({
-            "error": "Suhbat xotirasini o‘qib bo‘lmadi."
+            "error": "Suhbat xotirasini o'qib bo'lmadi."
         }), 500
 
     saved_question = question or "Yuborilgan faylni tahlil qil."
