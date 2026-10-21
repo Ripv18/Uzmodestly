@@ -368,22 +368,10 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
             "error": "Suhbat xotirasini o‘qib bo‘lmadi."
         }), 500
 
+   
     saved_question = question or "Yuborilgan faylni tahlil qil."
     user_content = saved_question
 
-    if attachment:
-        saved_question = (
-            f"[Fayl: {attachment['name']}]\n{saved_question}"
-        )
-
-        if attachment["type"] == "document":
-            user_content += (
-                f"\n\nFayl: {attachment['name']}\n"
-                "Fayldan ajratilgan matn:\n"
-                + attachment["text"]
-            )
-        else:
-           
     if attachment:
         saved_question = (
             f"[Fayl: {attachment['name']}]\n{saved_question}"
@@ -403,7 +391,7 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
                         user_content
                         + "\n\nRASM TAHLILI QOIDALARI:"
                         + "\n1. Rasm matnini diqqat bilan o‘qi."
-                        + "\n2. Sonlar, ishoralar va kasrlarni tekshir."
+                        + "\n2. Sonlar, ishoralar, kasrlar va formulalarni tekshir."
                         + "\n3. Masala shartini o‘zgartirma."
                         + "\n4. Noaniq belgilarni taxmin qilma."
                         + "\n5. Masalani bosqichma-bosqich yech."
