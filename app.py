@@ -315,7 +315,64 @@ def chat():
         return jsonify({
             "error": "Limit tugadi. Bir daqiqadan keyin urin."
         }), 429
+    # Foydalanuvchining xotira buyruqlari
+    memory_action = ""
 
+    if not attachment and question:
+        lowered_question = question.casefold().strip()
+
+        if lowered_question.startswith("eslab qol:"):
+            memory_text = question.split(":", 1)[1].strip()
+
+            if memory_text:
+                saved = memory.remember(
+                    memory_text,
+                    user_id=user_id,
+                )
+
+                memory_action = (
+                    "Ma'lumot xotiraga saqlandi."
+                    if saved
+                    else "Bu ma'lumot xotirada allaqachon bor."
+                )
+            else:
+                memory_action = (
+                    "Foydalanuvchidan eslab qolish uchun "
+                    "ma'lumot yozishini so'ra."
+                )
+
+        elif lowered_question.startswith("eslab qol "):
+            memory_text = question[len("eslab qol "):].strip()
+
+            if memory_text:
+                saved = memory.remember(
+                    memory_text,
+                    user_id=user_id,
+                )
+
+                memory_action = (
+                    "Ma'lumot xotiraga saqlandi."
+                    if saved
+                    else "Bu ma'lumot xotirada allaqachon bor."
+                )
+
+        elif lowered_question.startswith("unut:"):
+            memory_text = question.split(":", 1)[1].strip()
+
+            removed = (
+                memory.forget_matching(
+                    memory_text,
+                    user_id=user_id,
+                )
+                if memory_text
+                else 0
+            )
+
+            memory_action = (
+                "So'ralgan xotira o'chirildi."
+                if removed
+                else "O'chiriladigan xotira topilmadi."
+            )
     system_prompt = """
 SENING SHAXSING VA JAVOB BERISH QOIDALARI:
 
