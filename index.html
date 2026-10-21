@@ -893,6 +893,79 @@ body,
     }
 }
 
+/* Uzmodestly AI — Code blocks */
+.message-content .code-block {
+    margin: 14px 0;
+    overflow: hidden;
+    border: 1px solid #d8e5f5;
+    border-radius: 14px;
+    background: #f6f9fe;
+}
+
+.code-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 12px;
+    background: #eaf2ff;
+    border-bottom: 1px solid #d8e5f5;
+}
+
+.code-language {
+    color: #466486;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .7px;
+}
+
+.code-copy-btn {
+    padding: 6px 10px;
+    border: 1px solid #c9dcf8;
+    border-radius: 8px;
+    background: #fff;
+    color: #246bd0;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.code-copy-btn:hover {
+    background: #dceaff;
+}
+
+.code-copy-btn.copied {
+    color: #16804a;
+    border-color: #b7e5ca;
+    background: #edfff3;
+}
+
+.message-content .code-block pre {
+    margin: 0;
+    padding: 15px;
+    overflow-x: auto;
+    color: #24364d;
+    font-size: 13px;
+    line-height: 1.65;
+    white-space: pre;
+    tab-size: 4;
+}
+
+.message-content .code-block code {
+    font-family: Consolas, "Courier New", monospace;
+}
+
+@media (max-width: 700px) {
+    .message-content .code-block pre {
+        padding: 11px;
+        font-size: 12px;
+    }
+
+    .code-copy-btn {
+        min-height: 34px;
+    }
+}
+
 </style>
 </head>
 <body>
@@ -1158,35 +1231,119 @@ body,
     function scrollBottom() {
         messagesBox.scrollTop = messagesBox.scrollHeight;
     }
-    function addMessage(role, content, attachmentName = "") {
-        showWelcome(false);
-        const row = document.createElement("div");
-        row.className = "message " + (role === "user" ? "user" : "assistant");
-        const avatar = document.createElement("div");
-        avatar.className = "avatar";
-        avatar.textContent = role === "user" ? userInitial : "AI";
-        const body = document.createElement("div");
-        body.className = "message-body";
-        const name = document.createElement("div");
-        name.className = "message-name";
-        name.textContent = role === "user" ? "Sen" : "Uzmodestly";
-        const text = document.createElement("div");
-        text.className = "message-content";
-        text.textContent = content || "";
-        body.appendChild(name);
-        if (attachmentName) {
-            const attachment = document.createElement("div");
-            attachment.className = "attachment-label";
-            attachment.textContent = "📎 " + attachmentName;
-            body.appendChild(attachment);
+   
+function addMessage(role, content, attachmentName = "") {
+    showWelcome(false);
+
+    const row = document.createElement("div");
+    row.className = "message " + (role === "user" ? "user" : "assistant");
+
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.textContent = role === "user" ? userInitial : "AI";
+
+    const body = document.createElement("div");
+    body.className = "message-body";
+
+    const name = document.createElement("div");
+    name.className = "message-name";
+    name.textContent = role === "user" ? "Sen" : "Uzmodestly";
+
+    const text = document.createElement("div");
+    text.className = "message-content";
+
+    const message = content || "";
+
+    function renderContent(value) {
+        const pattern = /```([a-zA-Z0-9_+#.-]*)[ \t]*\n?([\s\S]*?)```/g;
+        let lastIndex = 0;
+        let match;
+
+        while ((match = pattern.exec(value)) !== null) {
+            if (match.index > lastIndex) {
+                text.appendChild(
+                    document.createTextNode(value.slice(lastIndex, match.index))
+                );
+            }
+
+            const language = match[1] || "code";
+            const codeText = match[2].replace(/^\n/, "").replace(/\n$/, "");
+
+            const block = document.createElement("div");
+            block.className = "code-block";
+
+            const header = document.createElement("div");
+            header.className = "code-block-header";
+
+            const label = document.createElement("span");
+            label.className = "code-language";
+            label.textContent = language.toUpperCase();
+
+            const copy = document.createElement("button");
+            copy.className = "code-copy-btn";
+            copy.type = "button";
+            copy.textContent = "Nusxalash";
+
+            const pre = document.createElement("pre");
+            const code = document.createElement("code");
+            code.textContent = codeText;
+
+            copy.addEventListener("click", async () => {
+                try {
+                    await navigator.clipboard.writeText(codeText);
+                    copy.textContent = "Nusxalandi ✓";
+                    copy.classList.add("copied");
+
+                    setTimeout(() => {
+                        copy.textContent = "Nusxalash";
+                        copy.classList.remove("copied");
+                    }, 1800);
+                } catch (error) {
+                    copy.textContent = "Nusxalab bo‘lmadi";
+                }
+            });
+
+            header.appendChild(label);
+            header.appendChild(copy);
+            pre.appendChild(code);
+            block.appendChild(header);
+            block.appendChild(pre);
+            text.appendChild(block);
+
+            lastIndex = pattern.lastIndex;
         }
-        body.appendChild(text);
-        row.appendChild(avatar);
-        row.appendChild(body);
-        messageList.appendChild(row);
-        scrollBottom();
-        return text;
+
+        if (lastIndex < value.length) {
+            text.appendChild(
+                document.createTextNode(value.slice(lastIndex))
+            );
+        }
     }
+
+    if (role === "assistant") {
+        renderContent(message);
+    } else {
+        text.textContent = message;
+    }
+
+    body.appendChild(name);
+
+    if (attachmentName) {
+        const attachment = document.createElement("div");
+        attachment.className = "attachment-label";
+        attachment.textContent = "📎 " + attachmentName;
+        body.appendChild(attachment);
+    }
+
+    body.appendChild(text);
+    row.appendChild(avatar);
+    row.appendChild(body);
+    messageList.appendChild(row);
+
+    scrollBottom();
+    return text;
+}
+
     function addLoading() {
         const row = document.createElement("div");
         row.className = "message";
