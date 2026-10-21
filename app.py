@@ -563,7 +563,28 @@ def chat():
         if not answer:
             answer = "Kechirasiz, javob yaratilmadi."
 
-              if question:
+                    if question:
+            memory.save_message(
+                cid,
+                "user",
+                question,
+                user_id=user_id,
+            )
+
+        elif attachment:
+            memory.save_message(
+                cid,
+                "user",
+                "Fayl yuborildi: " + attachment["name"],
+                user_id=user_id,
+            )
+
+        memory.save_message(
+            cid,
+            "assistant",
+            answer,
+            user_id=user_id,
+        )
             memory.save_message(
                 cid,
                 "user",
