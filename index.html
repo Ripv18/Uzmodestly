@@ -8,19 +8,19 @@
 
 <style>
 :root {
-    --bg: #101114;
-    --panel: #17181d;
-    --panel2: #202127;
-    --text: #f2f2f5;
-    --muted: #999ba8;
-    --border: #30313a;
+    --bg: #0c0d12;
+    --panel: #12141b;
+    --panel2: #1b1e28;
+    --text: #f4f5fb;
+    --muted: #969bad;
+    --border: #292d3a;
     --accent: #8b7cff;
-    --user: #292a33;
+    --user: #242634;
 }
 * { box-sizing: border-box; }
 body {
     margin: 0;
-    background: var(--bg);
+    background: radial-gradient(ellipse at 50% -20%, #282044 0%, transparent 55%), var(--bg);
     color: var(--text);
     font-family: Arial, sans-serif;
     height: 100dvh;
@@ -28,28 +28,24 @@ body {
 }
 button, textarea, input { font: inherit; }
 button { cursor: pointer; }
-.app {
-    display: flex;
-    width: 100%;
-    height: 100dvh;
-}
+.app { display: flex; width: 100%; height: 100dvh; }
 .sidebar {
     width: 270px;
     min-width: 270px;
-    background: #15161a;
+    background: rgba(15,16,23,.96);
     border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
-    padding: 15px;
+    padding: 20px 15px;
     gap: 12px;
 }
 .brand {
-    font-size: 23px;
+    font-size: 25px;
     font-weight: 800;
-    letter-spacing: 1px;
-    padding: 10px 5px;
+    letter-spacing: -.8px;
+    padding: 12px 7px 18px;
 }
-.brand span { color: var(--accent); }
+.brand span { color: #a99cff; }
 .btn {
     border: 1px solid var(--border);
     color: var(--text);
@@ -60,32 +56,17 @@ button { cursor: pointer; }
 }
 .btn:hover { background: #30313b; }
 .new-chat {
-    background: var(--accent);
+    background: linear-gradient(135deg, #8b7cff, #6d5ce8);
     color: white;
     border: 0;
     font-weight: 700;
+    box-shadow: 0 4px 18px #7765ed20;
 }
 .new-chat:hover { background: #7665ed; }
-.section-label {
-    color: var(--muted);
-    font-size: 12px;
-    padding: 8px 4px 0;
-}
-.history {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    overflow-y: auto;
-    flex: 1;
-}
-.history-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    border-radius: 9px;
-    padding: 3px;
-}
-.history-item.active { background: #292a33; }
+.section-label { color: var(--muted); font-size: 12px; padding: 8px 4px 0; }
+.history { display: flex; flex-direction: column; gap: 5px; overflow-y: auto; flex: 1; }
+.history-item { display: flex; align-items: center; gap: 5px; border-radius: 9px; padding: 3px; }
+.history-item:hover, .history-item.active { background: #232533; }
 .history-open {
     min-width: 0;
     flex: 1;
@@ -98,12 +79,7 @@ button { cursor: pointer; }
     padding: 10px 7px;
     text-align: left;
 }
-.delete-chat {
-    border: 0;
-    color: var(--muted);
-    background: transparent;
-    padding: 8px;
-}
+.delete-chat { border: 0; color: var(--muted); background: transparent; padding: 8px; }
 .delete-chat:hover { color: #ff7676; }
 .sidebar-footer {
     border-top: 1px solid var(--border);
@@ -112,41 +88,28 @@ button { cursor: pointer; }
     font-size: 12px;
     line-height: 1.6;
 }
-.main {
-    min-width: 0;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
+.main { min-width: 0; flex: 1; display: flex; flex-direction: column; height: 100%; }
 .topbar {
     height: 60px;
     min-height: 60px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid #252735;
+    background: rgba(12,13,18,.8);
+    backdrop-filter: blur(14px);
     display: flex;
     align-items: center;
     padding: 0 20px;
     gap: 12px;
 }
 .topbar-title { font-weight: 700; }
-.status {
-    margin-left: auto;
-    color: #79dba0;
-    font-size: 12px;
-}
+.status { margin-left: auto; color: #79dba0; font-size: 12px; font-weight: 600; }
 .mobile-menu { display: none; }
-.messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 25px 18px;
-    scroll-behavior: smooth;
-}
+.messages { flex: 1; overflow-y: auto; padding: 25px 18px; scroll-behavior: smooth; }
 .message-list {
     max-width: 820px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 28px;
 }
 .welcome {
     margin: auto;
@@ -159,24 +122,21 @@ button { cursor: pointer; }
     padding: 25px 10px;
 }
 .logo-circle {
-    width: 68px;
-    height: 68px;
-    border-radius: 22px;
+    width: 76px;
+    height: 76px;
+    border: 1px solid #8b7cff50;
+    border-radius: 25px;
     display: grid;
     place-items: center;
-    background: #252333;
-    color: #b4aaff;
-    font-size: 28px;
+    background: linear-gradient(145deg, #292443, #171722);
+    color: #c3baff;
+    box-shadow: 0 0 45px #8b7cff18;
+    font-size: 31px;
     font-weight: 800;
     margin-bottom: 18px;
 }
-.welcome h1 { font-size: 30px; margin: 0 0 10px; }
-.welcome p {
-    color: var(--muted);
-    max-width: 400px;
-    line-height: 1.6;
-    margin: 0;
-}
+.welcome h1 { font-size: clamp(26px, 4vw, 35px); letter-spacing: -1px; margin: 0 0 10px; }
+.welcome p { color: var(--muted); max-width: 400px; line-height: 1.6; margin: 0; font-size: 15px; }
 .suggestions {
     display: flex;
     gap: 8px;
@@ -187,22 +147,20 @@ button { cursor: pointer; }
 }
 .suggestion {
     border: 1px solid var(--border);
-    background: var(--panel);
+    background: #151720;
     color: var(--text);
-    border-radius: 12px;
-    padding: 11px 13px;
+    border-radius: 14px;
+    padding: 12px 15px;
+    transition: all .2s ease;
 }
-.suggestion:hover { border-color: var(--accent); }
-.message {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-}
+.suggestion:hover { background: #211e35; border-color: #8b7cff80; transform: translateY(-2px); }
+.message { display: flex; gap: 12px; align-items: flex-start; }
 .avatar {
     width: 34px;
     height: 34px;
     min-width: 34px;
-    border-radius: 11px;
+    border: 1px solid #8b7cff25;
+    border-radius: 12px;
     display: grid;
     place-items: center;
     font-size: 13px;
@@ -210,32 +168,17 @@ button { cursor: pointer; }
     background: #2a2938;
     color: #c1b8ff;
 }
-.message.user .avatar {
-    background: #30313a;
-    color: white;
-}
-.message-body {
-    min-width: 0;
-    flex: 1;
-    padding-top: 5px;
-}
-.message-name {
-    font-size: 13px;
-    font-weight: 700;
-    margin-bottom: 9px;
-}
+.message.user .avatar { background: #30313a; color: white; }
+.message-body { min-width: 0; flex: 1; padding-top: 5px; }
+.message-name { font-size: 13px; font-weight: 700; margin-bottom: 9px; }
 .message-content {
     white-space: pre-wrap;
     overflow-wrap: anywhere;
-    line-height: 1.75;
+    line-height: 1.8;
     font-size: 15px;
+    letter-spacing: .05px;
 }
-.message-content code {
-    background: #272832;
-    border-radius: 4px;
-    padding: 2px 5px;
-    font-family: Consolas, monospace;
-}
+.message-content code { background: #272832; border-radius: 4px; padding: 2px 5px; font-family: Consolas, monospace; }
 .message-content pre {
     overflow-x: auto;
     white-space: pre;
@@ -244,24 +187,19 @@ button { cursor: pointer; }
     border-radius: 10px;
     padding: 14px;
 }
-.message-content pre code {
-    background: transparent;
-    padding: 0;
-}
+.message-content pre code { background: transparent; padding: 0; }
 .message-content a { color: #b5aaff; }
 .message.user .message-content {
     display: inline-block;
-    background: var(--user);
-    border-radius: 4px 14px 14px 14px;
+    background: #222431;
+    border: 1px solid #323548;
+    border-radius: 5px 15px 15px 15px;
     padding: 10px 13px;
 }
-.attachment-label {
-    color: #c4baff;
-    font-size: 12px;
-    margin-bottom: 8px;
-}
+.attachment-label { color: #c4baff; font-size: 12px; margin-bottom: 8px; }
 .composer-area {
-    padding: 12px 18px 17px;
+    padding: 18px 18px 17px;
+    background: linear-gradient(transparent, #0c0d12 25%);
 }
 .composer-wrap { max-width: 820px; margin: 0 auto; }
 .file-preview {
@@ -276,21 +214,19 @@ button { cursor: pointer; }
     font-size: 13px;
 }
 .file-preview.visible { display: flex; }
-.file-preview button {
-    margin-left: auto;
-    border: 0;
-    color: var(--muted);
-    background: transparent;
-}
+.file-preview button { margin-left: auto; border: 0; color: var(--muted); background: transparent; }
 .composer {
     display: flex;
     align-items: flex-end;
     gap: 8px;
     padding: 10px;
-    border: 1px solid #41414d;
-    background: #1c1d22;
-    border-radius: 16px;
+    border: 1px solid #36394a;
+    background: #171922;
+    border-radius: 19px;
+    box-shadow: 0 8px 35px #00000020;
+    transition: border-color .2s, box-shadow .2s;
 }
+.composer:focus-within { border-color: #8b7cff99; box-shadow: 0 0 0 3px #8b7cff12; }
 .file-preview.visible + .composer { border-radius: 0 0 16px 16px; }
 .composer textarea {
     min-height: 42px;
@@ -305,32 +241,25 @@ button { cursor: pointer; }
     padding: 11px 5px;
     line-height: 1.5;
 }
+.composer textarea::placeholder { color: #85899c; }
 .icon-btn {
     width: 40px;
     height: 40px;
     min-width: 40px;
-    border-radius: 11px;
+    border-radius: 12px;
     border: 1px solid var(--border);
-    background: #292a33;
+    background: #242633;
     color: white;
     display: grid;
     place-items: center;
     font-size: 19px;
+    transition: all .2s ease;
 }
 .icon-btn:hover { background: #393947; }
-.send-btn {
-    background: var(--accent);
-    border: 0;
-    font-size: 20px;
-}
-.send-btn:hover { background: #7665ed; }
+.send-btn { background: linear-gradient(135deg, #9687ff, #7562eb); border: 0; font-size: 20px; }
+.send-btn:hover { background: #a193ff; transform: translateY(-1px); }
 .send-btn:disabled { opacity: .45; cursor: not-allowed; }
-.disclaimer {
-    text-align: center;
-    color: #777986;
-    font-size: 11px;
-    margin-top: 10px;
-}
+.disclaimer { text-align: center; color: #777986; font-size: 11px; margin-top: 10px; padding-bottom: 2px; }
 #fileInput { display: none; }
 .toast {
     position: fixed;
@@ -340,11 +269,14 @@ button { cursor: pointer; }
     background: #30313a;
     color: white;
     padding: 12px 16px;
+    border: 1px solid #3a3d4d;
     border-radius: 10px;
+    box-shadow: 0 10px 35px #0006;
     max-width: 90%;
     font-size: 13px;
     z-index: 20;
     display: none;
+    backdrop-filter: blur(12px);
 }
 .loading-dot {
     display: inline-block;
@@ -366,225 +298,26 @@ button { cursor: pointer; }
         bottom: 0;
         left: 0;
         z-index: 10;
+        width: min(290px, 85vw);
+        min-width: 0;
+        background: #111219;
         transform: translateX(-100%);
         transition: transform .2s;
         box-shadow: 10px 0 30px #0005;
     }
     .sidebar.open { transform: translateX(0); }
     .mobile-menu { display: inline-grid; }
-    .topbar { padding: 0 12px; }
+    .topbar { padding: 0 12px; min-height: 58px; height: 58px; }
     .messages { padding: 18px 12px; }
     .composer-area { padding: 10px 10px 13px; }
+    .welcome { padding: 25px 8px; }
     .welcome h1 { font-size: 25px; }
+    .suggestions { gap: 9px; }
+    .suggestion { font-size: 13px; }
+    .composer { padding: 8px; gap: 6px; }
+    .icon-btn { width: 38px; height: 38px; min-width: 38px; }
     .message-content { font-size: 14px; }
-
-/* Uzmodestly professional dizayn */
-:root {
-    --bg: #0c0d12;
-    --panel: #12141b;
-    --panel2: #1b1e28;
-    --text: #f4f5fb;
-    --muted: #969bad;
-    --border: #292d3a;
-    --accent: #8b7cff;
-    --user: #242634;
-}
-
-body {
-    background:
-        radial-gradient(ellipse at 50% -20%, #282044 0%, transparent 55%),
-        var(--bg);
-}
-
-.sidebar {
-    background: rgba(15, 16, 23, 0.96);
-    border-right-color: #262938;
-    padding: 20px 15px;
-}
-
-.brand {
-    font-size: 25px;
-    letter-spacing: -0.8px;
-    padding: 12px 7px 18px;
-}
-
-.brand span {
-    color: #a99cff;
-}
-
-.btn,
-.suggestion,
-.icon-btn {
-    transition: all 0.2s ease;
-}
-
-.new-chat {
-    background: linear-gradient(135deg, #8b7cff, #6d5ce8);
-    box-shadow: 0 4px 18px #7765ed20;
-}
-
-.new-chat:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 22px #7765ed35;
-}
-
-.history-item {
-    transition: background 0.18s ease;
-}
-
-.history-item:hover,
-.history-item.active {
-    background: #232533;
-}
-
-.topbar {
-    background: rgba(12, 13, 18, 0.8);
-    backdrop-filter: blur(14px);
-    border-bottom-color: #252735;
-}
-
-.status {
-    font-weight: 600;
-}
-
-.logo-circle {
-    width: 76px;
-    height: 76px;
-    border: 1px solid #8b7cff50;
-    border-radius: 25px;
-    background: linear-gradient(145deg, #292443, #171722);
-    color: #c3baff;
-    box-shadow: 0 0 45px #8b7cff18;
-    font-size: 31px;
-}
-
-.welcome h1 {
-    letter-spacing: -1px;
-    font-size: clamp(26px, 4vw, 35px);
-}
-
-.welcome p {
-    font-size: 15px;
-}
-
-.suggestion {
-    border-radius: 14px;
-    background: #151720;
-    padding: 12px 15px;
-}
-
-.suggestion:hover {
-    background: #211e35;
-    border-color: #8b7cff80;
-    transform: translateY(-2px);
-}
-
-.message-list {
-    gap: 28px;
-}
-
-.avatar {
-    border: 1px solid #8b7cff25;
-    border-radius: 12px;
-}
-
-.message-content {
-    line-height: 1.8;
-    letter-spacing: 0.05px;
-}
-
-.message.user .message-content {
-    background: #222431;
-    border: 1px solid #323548;
-    border-radius: 5px 15px 15px 15px;
-}
-
-.composer-area {
-    background: linear-gradient(transparent, #0c0d12 25%);
-    padding-top: 18px;
-}
-
-.composer {
-    background: #171922;
-    border: 1px solid #36394a;
-    border-radius: 19px;
-    box-shadow: 0 8px 35px #00000020;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.composer:focus-within {
-    border-color: #8b7cff99;
-    box-shadow: 0 0 0 3px #8b7cff12;
-}
-
-.composer textarea::placeholder {
-    color: #85899c;
-}
-
-.icon-btn {
-    border-radius: 12px;
-    background: #242633;
-}
-
-.send-btn {
-    background: linear-gradient(135deg, #9687ff, #7562eb);
-}
-
-.send-btn:hover {
-    background: #a193ff;
-    transform: translateY(-1px);
-}
-
-.disclaimer {
-    padding-bottom: 2px;
-}
-
-.toast {
-    border: 1px solid #3a3d4d;
-    box-shadow: 0 10px 35px #0006;
-    backdrop-filter: blur(12px);
-}
-
-@media (max-width: 700px) {
-    .sidebar {
-        background: #111219;
-        width: min(290px, 85vw);
-        min-width: 0;
-    }
-
-    .topbar {
-        min-height: 58px;
-        height: 58px;
-    }
-
-    .welcome {
-        padding: 25px 8px;
-    }
-
-    .suggestions {
-        gap: 9px;
-    }
-
-    .suggestion {
-        font-size: 13px;
-    }
-
-    .composer {
-        padding: 8px;
-        gap: 6px;
-    }
-
-    .icon-btn {
-        width: 38px;
-        height: 38px;
-        min-width: 38px;
-    }
-
-    .message-list {
-        gap: 23px;
-    }
-}
-
+    .message-list { gap: 23px; }
 }
 </style>
 </head>
@@ -592,17 +325,15 @@ body {
 <body>
 <div class="app">
     <aside class="sidebar" id="sidebar">
-       <div class="brand">Uzmodestly<span>.</span></div>
+        <div class="brand">Uzmodestly<span>.</span></div>
         <button class="btn new-chat" id="newChatBtn">＋ Yangi suhbat</button>
         <div class="section-label">SUHBATLAR TARIXI</div>
         <div class="history" id="history">
-            <div style="color:#999ba8;padding:10px;font-size:13px">
-                Suhbatlar yuklanmoqda...
-            </div>
+            <div style="color:#999ba8;padding:10px;font-size:13px">Suhbatlar yuklanmoqda...</div>
         </div>
         <div class="sidebar-footer">
             Uzmodestly · Shaxsiy yordamching<br>
-            Xabarlaring mahalliy xotirada saqlanadi.
+            Xabarlaring shaxsiy suhbatlar tarixida saqlanadi.
         </div>
     </aside>
 
@@ -682,119 +413,39 @@ body {
         }, 3500);
     }
 
-   
+    // Har bir brauzer uchun alohida foydalanuvchi ID.
+    function getUserId() {
+        const key = "uzmodestly_user_id_v1";
+        let userId = localStorage.getItem(key);
 
-async function api(url, options = {}) {
-    const headers = new Headers(options.headers || {});
+        if (!userId) {
+            userId = window.crypto &&
+                typeof window.crypto.randomUUID === "function"
+                ? window.crypto.randomUUID()
+                : "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+                    /[xy]/g,
+                    function (c) {
+                        const r = Math.random() * 16 | 0;
+                        return (c === "x" ? r : (r & 3 | 8)).toString(16);
+                    }
+                );
 
-    const userIdKey = "uzmodestly_user_id_v1";
-    let userId = localStorage.getItem(userIdKey);
-
-    if (!userId) {
-        userId = window.crypto?.randomUUID
-            ? window.crypto.randomUUID()
-            : "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-                /[xy]/g,
-                function (c) {
-                    const r = Math.random() * 16 | 0;
-                    return (c === "x" ? r : (r & 3 | 8)).toString(16);
-                }
-            );
-
-        localStorage.setItem(userIdKey, userId);
-    }
-
-    headers.set("X-User-ID", userId);
-
-    const response = await fetch(url, {
-        ...options,
-        headers: headers
-    });
-
-    const contentType = response.headers.get("content-type") || "";
-
-    if (contentType.includes("application/json")) {
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || "Server xatosi.");
+            localStorage.setItem(key, userId);
         }
 
-        return data;
+        return userId;
     }
 
-    const text = await response.text();
+    // Barcha oddiy API so‘rovlariga foydalanuvchi ID qo‘shiladi.
+    async function api(url, options = {}) {
+        const headers = new Headers(options.headers || {});
+        headers.set("X-User-ID", getUserId());
 
-    if (!response.ok) {
-        throw new Error(text || "Server xatosi: " + response.status);
-    }
+        const response = await fetch(url, {
+            ...options,
+            headers: headers
+        });
 
-    return text;
-}
-
-        localStorage.setItem(userIdKey, userId);
-    }
-
-    headers.set("X-User-ID", userId);
-
-    const response = await fetch(url, {
-        ...options,
-        headers: headers
-    });
-
-    const contentType = response.headers.get("content-type") || "";
-
-    if (contentType.includes("application/json")) {
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || "Server xatosi.");
-        }
-
-        return data;
-    }
-
-    const text = await response.text();
-
-    if (!response.ok) {
-        throw new Error(text || "Server xatosi: " + response.status);
-    }
-
-    return text;
-}
-            );
-
-        localStorage.setItem(userIdKey, userId);
-    }
-
-    headers.set("X-User-ID", userId);
-
-    const response = await fetch(url, {
-        ...options,
-        headers: headers
-    });
-
-    const contentType = response.headers.get("content-type") || "";
-
-    if (contentType.includes("application/json")) {
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || "Server xatosi.");
-        }
-
-        return data;
-    }
-
-    const text = await response.text();
-
-    if (!response.ok) {
-        throw new Error(text || "Server xatosi: " + response.status);
-    }
-
-    return text;
-}
-        const response = await fetch(url, options);
         const contentType = response.headers.get("content-type") || "";
 
         if (contentType.includes("application/json")) {
@@ -803,6 +454,7 @@ async function api(url, options = {}) {
             if (!response.ok) {
                 throw new Error(data.error || "Server xatosi.");
             }
+
             return data;
         }
 
@@ -959,12 +611,13 @@ async function api(url, options = {}) {
                 del.textContent = "×";
                 del.title = "Suhbatni o‘chirish";
                 del.setAttribute("aria-label", "Suhbatni o‘chirish");
+
                 del.addEventListener("click", async event => {
                     event.stopPropagation();
                     if (!confirm("Bu suhbatni o‘chirmoqchimisiz?")) return;
 
                     try {
-                        await api("/api/conversations/" + item.id, {
+                        await api("/api/conversations/" + encodeURIComponent(item.id), {
                             method: "DELETE"
                         });
 
@@ -1018,7 +671,7 @@ async function api(url, options = {}) {
         }
 
         try {
-            const data = await api("/api/conversations/" + id);
+            const data = await api("/api/conversations/" + encodeURIComponent(id));
             currentConversationId = data.id;
             renderMessages(data.messages || []);
             await loadHistory();
@@ -1037,8 +690,7 @@ async function api(url, options = {}) {
 
     function fitTextarea() {
         promptInput.style.height = "auto";
-        promptInput.style.height =
-            Math.min(promptInput.scrollHeight, 180) + "px";
+        promptInput.style.height = Math.min(promptInput.scrollHeight, 180) + "px";
     }
 
     async function sendMessage() {
@@ -1056,6 +708,11 @@ async function api(url, options = {}) {
                 const data = await api("/api/conversations", {
                     method: "POST"
                 });
+
+                if (!data || !data.id) {
+                    throw new Error("Yangi suhbat ID si olinmadi.");
+                }
+
                 currentConversationId = data.id;
             } catch (error) {
                 toast("Suhbat yaratilmadi: " + error.message);
@@ -1072,7 +729,9 @@ async function api(url, options = {}) {
         formData.append("message", message);
         formData.append("conversation_id", String(currentConversationId));
 
-        if (attachment) formData.append("file", attachment);
+        if (attachment) {
+            formData.append("file", attachment);
+        }
 
         promptInput.value = "";
         fitTextarea();
@@ -1081,8 +740,12 @@ async function api(url, options = {}) {
         addLoading();
 
         try {
+            // Chat so‘roviga ham ayni foydalanuvchi ID si yuboriladi.
             const response = await fetch("/api/chat", {
                 method: "POST",
+                headers: {
+                    "X-User-ID": getUserId()
+                },
                 body: formData
             });
 
@@ -1091,9 +754,11 @@ async function api(url, options = {}) {
 
             if (contentType.includes("application/json")) {
                 const data = await response.json();
+
                 if (!response.ok || data.error) {
                     throw new Error(data.error || "AI serverida xato.");
                 }
+
                 answer = data.answer || data.reply || "";
             } else {
                 answer = await response.text();
@@ -1111,7 +776,7 @@ async function api(url, options = {}) {
             addMessage(
                 "assistant",
                 "Xatolik: " + error.message +
-                "\n\nTerminaldagi app.py xabarlarini tekshir."
+                "\n\nServer ishlashini va Render loglarini tekshir."
             );
             toast(error.message);
         } finally {
