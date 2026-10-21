@@ -384,6 +384,38 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
             )
         else:
            
+    if attachment:
+        saved_question = (
+            f"[Fayl: {attachment['name']}]\n{saved_question}"
+        )
+
+        if attachment["type"] == "document":
+            user_content += (
+                f"\n\nFayl: {attachment['name']}\n"
+                "Fayldan ajratilgan matn:\n"
+                + attachment["text"]
+            )
+        else:
+            user_content = [
+                {
+                    "type": "text",
+                    "text": (
+                        user_content
+                        + "\n\nRASM TAHLILI QOIDALARI:"
+                        + "\n1. Rasm matnini diqqat bilan o‘qi."
+                        + "\n2. Sonlar, ishoralar va kasrlarni tekshir."
+                        + "\n3. Masala shartini o‘zgartirma."
+                        + "\n4. Noaniq belgilarni taxmin qilma."
+                        + "\n5. Masalani bosqichma-bosqich yech."
+                        + "\n6. Javobni qayta tekshir."
+                    ),
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {"url": attachment["data_url"]},
+                },
+            ]
+
         else:
             user_content = [
                 {
