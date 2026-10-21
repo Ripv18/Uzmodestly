@@ -347,7 +347,7 @@ button { cursor: pointer; }
         <section class="messages" id="messages">
             <div class="welcome" id="welcome">
                 <div class="logo-circle">B</div>
-                <h1>Salom, Behruz! 👋</h1>
+                <h1 id="greeting">Salom!</h1>
                 <p>Men Uzmodestly. Savollaringni ber, masalalarni yech, rasm yoki hujjat yubor.</p>
                 <div class="suggestions">
                     <button class="suggestion" data-prompt="Menga matematik masala yechishda yordam ber.">🧮 Masala yechish</button>
@@ -859,5 +859,28 @@ button { cursor: pointer; }
     init();
 })();
 </script>
+    <script>
+(function () {
+    const greeting = document.getElementById("greeting");
+    if (!greeting) return;
+
+    let name = localStorage.getItem("uzmodestly_name_v1");
+
+    if (!name) {
+        name = prompt("Salom! Ismingiz nima?");
+        name = (name || "").trim();
+
+        while (!name) {
+            name = prompt("Iltimos, ismingizni kiriting:");
+            name = (name || "").trim();
+        }
+
+        localStorage.setItem("uzmodestly_name_v1", name);
+    }
+
+    greeting.textContent = "Salom, " + name + "! 👋";
+})();
+</script>
 </body>
+</script>
 </html>
