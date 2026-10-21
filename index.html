@@ -475,6 +475,77 @@ body,
     color: #ffffff;
 }
 
+/* Uzmodestly AI — Sidebar redesign */
+.sidebar {
+    background: linear-gradient(180deg, #ffffff 0%, #f4f8ff 100%);
+    border-right: 1px solid #dce8f8;
+    color: #203452;
+}
+
+.sidebar .brand {
+    color: #1769d2;
+}
+
+.sidebar button,
+.sidebar a,
+.sidebar .nav-item,
+.sidebar .memory-button {
+    border-radius: 14px;
+    transition: background .2s ease, color .2s ease,
+                transform .2s ease;
+}
+
+.sidebar .new-chat {
+    background: linear-gradient(110deg, #347ff3, #4cc4f3);
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 5px 16px #347ff320;
+}
+
+.sidebar .new-chat:hover {
+    background: linear-gradient(110deg, #286ee0, #36b3e9);
+    transform: translateY(-1px);
+}
+
+.sidebar .memory-button,
+.sidebar .nav-item {
+    background: #eaf3ff;
+    color: #2469c9;
+    border: 1px solid #deebff;
+}
+
+.sidebar .memory-button:hover,
+.sidebar .nav-item:hover {
+    background: #dcecff;
+    color: #1458b5;
+}
+
+.sidebar button svg,
+.sidebar a svg {
+    color: #2878f0;
+}
+
+.sidebar hr {
+    border: none;
+    border-top: 1px solid #e0eaf7;
+}
+
+.sidebar .conversation,
+.sidebar .chat-item {
+    border-radius: 14px;
+}
+
+.sidebar .conversation:hover,
+.sidebar .chat-item:hover {
+    background: #edf5ff;
+}
+
+@media (max-width: 700px) {
+    .sidebar {
+        box-shadow: 10px 0 35px #244b7a15;
+    }
+}
+
 </style>
 </head>
 <body>
