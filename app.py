@@ -47,7 +47,14 @@ oauth.register(
     ),
     client_kwargs={"scope": "openid email profile"},
 )
+@app.route("/robots.txt")
+def robots_txt():
+    return send_from_directory(app.root_path, "robots.txt")
 
+
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    return send_from_directory(app.root_path, "sitemap.xml")
 @app.route("/logo.png")
 def logo():
     return send_from_directory(app.root_path, "logo.png")
