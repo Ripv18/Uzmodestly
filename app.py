@@ -309,6 +309,7 @@ def delete_conversation(cid):
 @app.route("/api/chat", methods=["POST"])
 def chat():
     user_id = get_user_id()
+    user_name = request.headers.get("X-User-Name", "").strip()[:50]
 
     if not user_id:
         return jsonify({
@@ -321,7 +322,6 @@ def chat():
         return jsonify({
             "error": "GROQ_API_KEY sozlanmagan."
         }), 503
-
     question = (
         request.form.get("message") or ""
     ).strip()[:3000]
@@ -395,24 +395,24 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
    "I can't help with that" deb javob berma.
 7. Javob bera olmasang, sababini o'zbek tilida tushuntir.
 8. Matematik masalalarni tekshirib, bosqichma-bosqich yech.
-9. Rasm yuborilsa, undagi ko'rinadigan narsalar,
-   yozuvlar va masalalarni diqqat bilan tahlil qil.
-10. Rasm xira yoki yozuvlar o'qilmasa, buni ochiq ayt.
+9. Rasm yuborilsa, undagi yozuvlarni diqqat bilan tahlil qil.
+10. Rasm xira bo'lsa, buni ochiq ayt.
 11. Bilmagan narsangni to'qib chiqarma.
-12. Oddiy javoblarda ortiqcha Markdown bezaklari va LaTeX ishlatma.
+12. Oddiy javoblarda ortiqcha bezaklardan foydalanma.
 13. Kod so'ralsa, to'liq va ishlaydigan kod ber.
 """
+
     if user_name:
         system_prompt += (
             "\n\nFOYDALANUVCHI HAQIDA:"
             f"\nFoydalanuvchining ismi: {user_name}."
-            "\nAgar foydalanuvchi ismini so'rasa, shu ismni ayt."
-            "\nFoydalanuvchi ismini oldin aytmagan deb da'vo qilma."
+            "\nIsmi so'ralsa, aynan shu ismni ayt."
+            "\nIsmini oldin aytmagan deb aytma."
         )
+
     safe_messages = [
         {"role": "system", "content": system_prompt}
     ]
-
     try:
         old_context = memory.get_recent_context(
             exclude_conversation_id=cid,
