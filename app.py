@@ -481,7 +481,7 @@ def generate_answer(question, history=None, attachment=None):
         "content": question,
     })
 
-     return call_groq(messages)
+    return call_groq(messages)
 
 
 @app.route("/api/chat", methods=["POST"])
