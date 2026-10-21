@@ -439,7 +439,8 @@ button { cursor: pointer; }
     // Barcha oddiy API so‘rovlariga foydalanuvchi ID qo‘shiladi.
     async function api(url, options = {}) {
         const headers = new Headers(options.headers || {});
-        headers.set("X-User-ID", getUserId());
+     headers.set("X-User-ID", getUserId());
+headers.set("X-User-Name", localStorage.getItem("uzmodestly_name_v1") || "");
 
         const response = await fetch(url, {
             ...options,
