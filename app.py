@@ -10,6 +10,7 @@ from collections import defaultdict, deque
 import requests
 from flask import Flask, send_from_directory, request, jsonify, Response, stream_with_context
 from werkzeug.utils import secure_filename
+from authlib.integrations.flask_client import OAuth
 
 import memory
 
@@ -34,6 +35,18 @@ except ImportError:
 from flask import send_from_directory
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("FLASK_SECRET_KEY")
+oauth = OAuth(app)
+
+oauth.register(
+    name="google",
+    client_id=os.environ.get("GOOGLE_CLIENT_ID"),
+    client_secret=os.environ.get("GOOGLE_CLIENT_SECRET"),
+    server_metadata_url=(
+        "https://accounts.google.com/.well-known/openid-configuration"
+    ),
+    client_kwargs={"scope": "openid email profile"},
+)
 
 @app.route("/logo.png")
 def logo():
@@ -98,14 +111,16 @@ DOCUMENT_EXTENSIONS = {"pdf", "docx"}
 requests_by_ip = defaultdict(deque)
 
 
-def get_user_id():
-    """Brauzer yuborgan UUID ni tekshiradi."""
-    raw_id = request.headers.get("X-User-ID", "").strip()
 
-    try:
-        return str(uuid.UUID(raw_id))
-    except (ValueError, AttributeError, TypeError):
-        return None
+def get_user_id():
+    """Google orqali kirgan foydalanuvchini sessiyadan aniqlaydi."""
+    user_id = session.get("user_id")
+
+    if isinstance(user_id, str) and user_id.startswith("google:"):
+        return user_id
+
+    return None
+
 
 
 def repair_text(text):
@@ -265,9 +280,10 @@ def file_too_large(_error):
 
 @app.route("/")
 def home():
+    if not session.get("user_id"):
+        return redirect(url_for("google_login"))
+
     return send_from_directory(".", "index.html")
-
-
 @app.route("/google60ac72fbd987c0b6.html")
 def google_verify():
     return send_from_directory(".", "google60ac72fbd987c0b6.html")
@@ -491,6 +507,44 @@ def generate_answer(question, history=None, attachment=None):
     })
 
     return call_groq(messages)
+
+@app.route("/login/google")
+def google_login():
+    if not os.environ.get("GOOGLE_CLIENT_ID"):
+        return "Google login sozlanmagan.", 500
+
+    redirect_uri = url_for(
+        "google_callback",
+        _external=True,
+        _scheme="https",
+    )
+    return oauth.google.authorize_redirect(redirect_uri)
+
+
+@app.route("/auth/google/callback")
+def google_callback():
+    try:
+        token = oauth.google.authorize_access_token()
+        user = token.get("userinfo")
+
+        if not user or not user.get("sub"):
+            return "Google foydalanuvchisini aniqlab bo‘lmadi.", 400
+
+        session.clear()
+        session["user_id"] = "google:" + user["sub"]
+        session["user_email"] = user.get("email", "")
+        session["user_name"] = user.get("name", "Foydalanuvchi")
+
+        return redirect("/")
+    except Exception:
+        app.logger.exception("Google login xatosi")
+        return "Google orqali kirishda xato yuz berdi. Qayta urinib ko‘ring.", 400
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
 
 
 @app.route("/api/chat", methods=["POST"])
