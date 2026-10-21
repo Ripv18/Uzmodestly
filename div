@@ -197,6 +197,92 @@ button { cursor:pointer; }
     const promptInput = $("prompt");
     const sendBtn = $("sendBtn");
     const status = $("status");
+
+    // Saqlangan xotiralarni ko‘rsatish
+    async function loadMemories() {
+        const list = $("memoriesList");
+        list.textContent = "Xotiralar yuklanmoqda...";
+
+        try {
+            const data = await api("/api/memories");
+            const memories = Array.isArray(data.memories)
+                ? data.memories
+                : [];
+
+            list.replaceChildren();
+
+            if (memories.length === 0) {
+                list.textContent = "Hozircha saqlangan xotiralar yo‘q.";
+                return;
+            }
+
+            for (const item of memories) {
+                const row = document.createElement("div");
+                row.style.cssText =
+                    "display:flex;gap:10px;align-items:flex-start;" +
+                    "padding:12px;background:#222431;border-radius:10px";
+
+                const content = document.createElement("div");
+                content.style.cssText =
+                    "flex:1;min-width:0;overflow-wrap:anywhere;line-height:1.5";
+                content.textContent = item.content || "";
+
+                const del = document.createElement("button");
+                del.className = "btn";
+                del.textContent = "🗑️";
+                del.title = "Xotirani o‘chirish";
+
+                del.addEventListener("click", async () => {
+                    if (!confirm("Ushbu xotirani o‘chirmoqchimisiz?")) {
+                        return;
+                    }
+
+                    del.disabled = true;
+
+                    try {
+                        await api("/api/memories/" + item.id, {
+                            method: "DELETE"
+                        });
+
+                        row.remove();
+
+                        if (!list.children.length) {
+                            list.textContent =
+                                "Hozircha saqlangan xotiralar yo‘q.";
+                        }
+
+                        toast("Xotira o‘chirildi.");
+                    } catch (error) {
+                        del.disabled = false;
+                        toast("Xotira o‘chirilmadi: " + error.message);
+                    }
+                });
+
+                row.appendChild(content);
+                row.appendChild(del);
+                list.appendChild(row);
+            }
+        } catch (error) {
+            list.textContent = "Xotiralarni yuklab bo‘lmadi: " +
+                error.message;
+        }
+    }
+
+    $("memoriesBtn").addEventListener("click", async () => {
+        $("memoriesModal").style.display = "flex";
+        await loadMemories();
+    });
+
+    $("closeMemoriesBtn").addEventListener("click", () => {
+        $("memoriesModal").style.display = "none";
+    });
+
+    $("memoriesModal").addEventListener("click", event => {
+        if (event.target.id === "memoriesModal") {
+            $("memoriesModal").style.display = "none";
+        }
+    });
+
     const fileInput = $("fileInput");
     const filePreview = $("filePreview");
     const fileName = $("fileName");
