@@ -5,6 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Uzmodestly</title>
 <style>
+.google-login-btn {
+    display: inline-block;
+    padding: 10px 16px;
+    background: #2878f0;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.google-login-btn:hover {
+    background: #1765d1;
+}    
 :root { --bg:#0c0d12; --panel:#12141b; --panel2:#1b1e28; --text:#f4f5fb; --muted:#969bad; --border:#292d3a; --accent:#8b7cff; --user:#242634; }
 * { box-sizing:border-box; }
 body { margin:0; background:radial-gradient(ellipse at 50% -20%,#282044 0%,transparent 55%),var(--bg); color:var(--text); font-family:Arial,sans-serif; height:100dvh; overflow:hidden; }
@@ -1025,7 +1039,9 @@ body,
     <img src="/logo.png" alt="Uzmodestly AI" class="brand-logo">
     <span>Uzmodestly AI</span>
 </div>
-
+<a href="/login/google" class="google-login-btn">
+    Google bilan kirish
+</a>
         <button class="btn new-chat" id="newChatBtn">＋ Yangi suhbat</button>
         <button class="btn" id="memoriesBtn">🧠 Saqlangan xotiralar</button>
         <div class="section-label">SUHBATLAR TARIXI</div>
