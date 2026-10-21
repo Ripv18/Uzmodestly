@@ -124,6 +124,151 @@ input:focus, textarea:focus {
     box-shadow: 0 0 0 3px rgba(40, 120, 240, 0.10);
 }
   
+/* Uzmodestly AI — White & Blue modern chat */
+:root {
+    --bg: #f4f7fc;
+    --panel: #ffffff;
+    --text: #1b2940;
+    --muted: #718096;
+    --border: #e1e8f3;
+}
+
+body {
+    background: #f4f7fc;
+    color: #1b2940;
+}
+
+.sidebar {
+    background: linear-gradient(180deg, #ffffff 0%, #edf4ff 100%);
+    border-color: #e1e8f3;
+}
+
+.topbar {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: #e1e8f3;
+}
+
+.messages {
+    background: radial-gradient(ellipse at top, #eaf3ff 0%, #f7f9fd 65%);
+}
+
+.logo-circle {
+    background: linear-gradient(135deg, #2878f0, #60c5fa);
+    color: #ffffff;
+    border: 0;
+    box-shadow: 0 12px 30px #2878f025;
+}
+
+.suggestion {
+    background: #ffffff;
+    color: #243752;
+    border-color: #dce7f7;
+    border-radius: 16px;
+    box-shadow: 0 4px 14px #234b7a08;
+}
+
+.suggestion:hover {
+    background: #edf5ff;
+    border-color: #80b5ff;
+}
+
+.avatar {
+    background: #e4efff;
+    color: #2878f0;
+    border-color: #d3e4ff;
+}
+
+.message.user .avatar {
+    background: #2878f0;
+    color: #ffffff;
+}
+
+.message.user .message-content {
+    background: linear-gradient(135deg, #e6f0ff, #f2f7ff);
+    border: 1px solid #d6e6ff;
+    border-radius: 5px 18px 18px 18px;
+    color: #1b2940;
+    padding: 12px 15px;
+}
+
+.message-content code {
+    background: #eaf1fc;
+    color: #2458a6;
+}
+
+.message-content pre {
+    background: #17243b;
+    color: #f4f7ff;
+    border-color: #dce5f2;
+    border-radius: 14px;
+}
+
+.message-content a,
+.attachment-label {
+    color: #2878f0;
+}
+
+.composer-area {
+    background: linear-gradient(transparent, #f4f7fc 22%);
+}
+
+.composer {
+    background: #ffffff;
+    border-color: #dce5f2;
+    border-radius: 22px;
+    box-shadow: 0 8px 30px #234b7a10;
+}
+
+.composer:focus-within {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 4px #2878f015;
+}
+
+.composer textarea {
+    color: #1b2940;
+}
+
+.composer textarea::placeholder {
+    color: #8998ad;
+}
+
+.icon-btn {
+    background: #f0f5fd;
+    color: #2878f0;
+    border-color: #dce7f7;
+    border-radius: 14px;
+}
+
+.icon-btn:hover {
+    background: #e0edff;
+}
+
+.send-btn {
+    background: linear-gradient(135deg, #2878f0, #60bafa);
+    color: #ffffff;
+}
+
+.send-btn:hover {
+    background: linear-gradient(135deg, #1f67d4, #45a8ed);
+}
+
+.disclaimer {
+    color: #8190a5;
+}
+
+.toast {
+    background: #ffffff;
+    color: #1b2940;
+    border-color: #dce5f2;
+    box-shadow: 0 10px 35px #234b7a18;
+}
+
+@media (max-width: 700px) {
+    .sidebar {
+        background: #ffffff;
+    }
+}
+
 </style>
 </head>
 <body>
