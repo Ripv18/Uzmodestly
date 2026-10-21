@@ -213,7 +213,7 @@ def google_verify():
 @app.route("/api/conversations", methods=["GET"])
 def conversations():
     user_id = get_user_id()
-
+user_name = request.headers.get("X-User-Name", "").strip()[:50]
     if not user_id:
         return jsonify({
             "error": "Foydalanuvchi ID noto‘g‘ri yoki yo‘q."
@@ -402,7 +402,13 @@ SENING SHAXSING VA JAVOB BERISH QOIDALARI:
 12. Oddiy javoblarda ortiqcha Markdown bezaklari va LaTeX ishlatma.
 13. Kod so'ralsa, to'liq va ishlaydigan kod ber.
 """
-
+    if user_name:
+        system_prompt += (
+            "\n\nFOYDALANUVCHI HAQIDA:"
+            f"\nFoydalanuvchining ismi: {user_name}."
+            "\nAgar foydalanuvchi ismini so'rasa, shu ismni ayt."
+            "\nFoydalanuvchi ismini oldin aytmagan deb da'vo qilma."
+        )
     safe_messages = [
         {"role": "system", "content": system_prompt}
     ]
