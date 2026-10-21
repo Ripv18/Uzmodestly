@@ -196,8 +196,7 @@ def file_too_large(_error):
 @app.route("/")
 def home():
     return send_from_directory(".", "index.html")
-    )
-
+    
 @app.route("/logo.png")
 def logo():
     return send_from_directory(
